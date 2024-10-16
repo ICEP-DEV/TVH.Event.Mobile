@@ -1,7 +1,7 @@
 {
   "expo": {
     "name": "tvh.event.mobile",
-    "slug": "tvh.event.mobile",
+    "slug": "tvh-event-mobile",
     "version": "1.0.0",
     "orientation": "portrait",
     "icon": "./assets/icon.png",
