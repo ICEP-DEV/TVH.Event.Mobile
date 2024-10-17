@@ -1,5 +1,6 @@
 // HomeScreen.js
-import React from "react";
+import axios from "axios";
+import React, { useState } from "react";
 import {
   View,
   Text,
@@ -9,10 +10,25 @@ import {
   TouchableOpacity,
 } from "react-native";
 import { SearchBar, Card, Icon } from "react-native-elements";
+import api from "../APIs/API";
 
 const HomeScreen = () => {
+  const [eventData, setEventData] = useState([]);
 
-  const events = [
+  useState(() => {
+    const getAllEvents = async () => {
+      try {
+        const events = await axios.get(api + "/event/all");
+        setEventData(events.data.results);
+      } catch (error) {
+        console.log(error);
+      }
+    };
+
+    getAllEvents();
+  });
+
+  /* const events = [
     {
       date: "10 JUNE",
       name: "ALX Hackathon",
@@ -33,7 +49,7 @@ const HomeScreen = () => {
     },
     // Add more events as needed
   ];
-
+*/
   return (
     <ScrollView style={styles.container}>
       {/* Search Bar */}
@@ -89,15 +105,15 @@ const HomeScreen = () => {
           showsHorizontalScrollIndicator={false}
           style={styles.horizontalScroll}
         >
-          {events.map((event, index) => (
+          {eventData.map((event, index) => (
             <Card containerStyle={styles.largeCard} key={index}>
               <Image
-                source={event.imageSource}
+                source={require("../assets/alx.jpg")}
                 style={styles.largeEventImage}
               />
               <View style={styles.eventInfo}>
-                <Text style={styles.eventDate}>{event.date}</Text>
-                <Text style={styles.eventName}>{event.name}</Text>
+                <Text style={styles.eventDate}>{event.start_date}</Text>
+                <Text style={styles.eventName}>{event.title}</Text>
                 <Text style={styles.eventLocation}>{event.location}</Text>
               </View>
             </Card>
