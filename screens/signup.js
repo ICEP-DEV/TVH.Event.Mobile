@@ -18,7 +18,7 @@ export default function SignupScreen({ navigation }){
     const [checked, setChecked] = useState(false)
 
 
-    const submitForm = async()=>{
+    const submitForm = async () =>{
 
         if (!firstname || !lastname || !email || !password || !confirmPassword) {
             Alert.alert('Validation Error', 'Please fill all the fields.');
@@ -46,7 +46,7 @@ export default function SignupScreen({ navigation }){
             'http://192.168.0.115:3001/api/auth/mobile/create',
             payload
         ).then(response =>{
-            Alert.alert('Success', 'Account has been Created');
+            Alert.alert('Success', response.data.results);
             navigation.replace("Login")
         })
         .catch(error =>{
