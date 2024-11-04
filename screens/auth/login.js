@@ -3,6 +3,7 @@ import axios from 'axios';
 import { useState } from 'react';
 import { Alert, Dimensions, Pressable, ScrollView, StyleSheet, Text, TextInput, View } from 'react-native';
 import { Button } from 'react-native-elements';
+import api from '../../APIs/API';
 
 
 const { height, width } = Dimensions.get('window');
@@ -23,12 +24,13 @@ export default function LoginScreen({navigation}){
         }
 
         await axios.post(
-            'http://192.168.0.115:3001/api/auth/mobile/login',
+            api + '/auth/mobile/login',
             {
                 email,
                 password
             }
         ).then(response => {
+            
             navigation.replace('Home')
         }).catch((error) => {
             Alert.alert('Invalid Credentials','Please double check your email and password');

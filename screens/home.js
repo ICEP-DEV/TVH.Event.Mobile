@@ -13,7 +13,7 @@ import { SearchBar, Card, Icon } from "react-native-elements";
 import api from "../APIs/API";
 
 
-const HomeScreen = () => {
+const HomeScreen = ({ navigation }) => {
   const [eventData, setEventData] = useState([]);
 
   useState(() => {
@@ -107,20 +107,35 @@ const HomeScreen = () => {
           showsHorizontalScrollIndicator={false}
           style={styles.horizontalScroll}
         >
-          {events.map((event, index) => (
-            <Card containerStyle={styles.largeCard} key={index}>
+          {eventData.map((event, index) => (
+            <TouchableOpacity 
+              key={index}
+              onPress={
+                ()=>{
+                  navigation.navigate('EventDetails', {event})
+                  //print("Clicked")
+                }
+              }
+              >
+              <Card containerStyle={styles.largeCard} >
               <Image
                 source={require("../assets/alx.jpg")}
                 style={styles.largeEventImage}
               />
               <View style={styles.dateContainer}>
-                <Text style={styles.dateText}>{event.date}</Text>
+                {/*   
+                <Text style={styles.dateText}>{event.start_date.split('T')[0]}</Text>
+                */}
               </View>
               <View style={styles.eventInfo}>
-                <Text style={styles.eventName}>{event.name}</Text>
+                <Text style={styles.eventName}>{event.title}</Text>
                 <Text style={styles.eventLocation}>{event.location}</Text>
+                <Text style={{}}>{event.start_date.split('T')[0]}</Text>
+                <Text style={{}}>{event.time.split('T')[1].split('.')[0]}</Text>
               </View>
             </Card>
+            </TouchableOpacity>
+            
           ))}
         </ScrollView>
       </View>

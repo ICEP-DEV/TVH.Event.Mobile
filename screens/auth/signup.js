@@ -3,6 +3,7 @@ import { View, Text, StyleSheet, Dimensions, TextInput, ScrollView, Alert,   } f
 import { Button, CheckBox  } from 'react-native-elements';
 import axios from 'axios';
 import { Pressable } from 'react-native-gesture-handler';
+import api from '../../APIs/API';
 
 
 
@@ -43,7 +44,7 @@ export default function SignupScreen({ navigation }){
         }
 
         await axios.post(
-            'http://192.168.0.115:3001/api/auth/mobile/create',
+            api + '/auth/mobile/create',
             payload
         ).then(response =>{
             Alert.alert('Success', response.data.results);
@@ -191,7 +192,7 @@ const styles = StyleSheet.create({
     },
     TermsText: {
         flex : 10,
-        flexShrink: 1, // Ensure the text doesn't push elements out of the row
+        flexShrink: 1, 
         marginRight : width * 0.05
       },
 })
