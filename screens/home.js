@@ -12,6 +12,7 @@ import {
 import { SearchBar, Card, Icon } from "react-native-elements";
 import api from "../APIs/API";
 
+
 const HomeScreen = () => {
   const [eventData, setEventData] = useState([]);
 
@@ -28,7 +29,7 @@ const HomeScreen = () => {
     getAllEvents();
   });
 
-  /* const events = [
+  const events = [
     {
       date: "10 JUNE",
       name: "ALX Hackathon",
@@ -49,7 +50,7 @@ const HomeScreen = () => {
     },
     // Add more events as needed
   ];
-*/
+
   return (
     <ScrollView style={styles.container}>
       {/* Search Bar */}
@@ -77,6 +78,7 @@ const HomeScreen = () => {
               source={require("../assets/hero.jpg")}
               style={styles.eventImage}
             />
+
             <Text style={styles.cardTitle}>Hackathons</Text>
           </Card>
           <Card containerStyle={styles.card}>
@@ -105,15 +107,17 @@ const HomeScreen = () => {
           showsHorizontalScrollIndicator={false}
           style={styles.horizontalScroll}
         >
-          {eventData.map((event, index) => (
+          {events.map((event, index) => (
             <Card containerStyle={styles.largeCard} key={index}>
               <Image
                 source={require("../assets/alx.jpg")}
                 style={styles.largeEventImage}
               />
+              <View style={styles.dateContainer}>
+                <Text style={styles.dateText}>{event.date}</Text>
+              </View>
               <View style={styles.eventInfo}>
-                <Text style={styles.eventDate}>{event.start_date}</Text>
-                <Text style={styles.eventName}>{event.title}</Text>
+                <Text style={styles.eventName}>{event.name}</Text>
                 <Text style={styles.eventLocation}>{event.location}</Text>
               </View>
             </Card>
@@ -178,6 +182,7 @@ const styles = StyleSheet.create({
   },
   largeCard: {
     width: 200,
+    height: 240,
     borderRadius: 10,
     padding: 0,
     marginHorizontal: 5,
@@ -191,11 +196,18 @@ const styles = StyleSheet.create({
   eventInfo: {
     padding: 10,
   },
-  eventDate: {
-    color: "#E74C3C",
-    fontSize: 12,
-    fontWeight: "bold",
+  dateContainer: {
+    position: "absolute",
+    top: 10,
+    left: 10,
+    paddingVertical: 6,
+    paddingHorizontal: 8,
+    justifyContent: "center",
+    backgroundColor: "rgba(240, 99, 90, 0.8)",
+    borderRadius: 10,
+    width: 55,
   },
+  dateText: { fontSize: 11, color: "white", textAlign: "center" },
   eventName: {
     fontSize: 16,
     fontWeight: "bold",

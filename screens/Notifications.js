@@ -90,7 +90,7 @@ const notifications = [
   },
   {
     id: "15",
-    logo: require("../assets/alx.jpg"), // replace with correct logo path
+    logo: require("../assets/gks.png"), // replace with correct logo path
     message:
       "ALX Hackathon 2024: A day of coding, collaboration, and competition awaits. Get ready to make your mark!",
   },
