@@ -4,9 +4,11 @@ import React from "react";
 import LoginScreen from './screens/login'
 import NotificationScreen from "./screens/Notifications.js";
 import HomeScreen from './screens/home.js'
+import RegistrationScreen from "./screens/registration.js";
 import SignupScreen from './screens/signup.js'
 import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
 import { Icon } from "react-native-elements";
+import AllEvents from "./screens/allEvents.js";
 
 
 
@@ -23,11 +25,11 @@ export default function App(){
 
             if (route.name === "Home") {
               iconName = focused ? "home" : "home-outline";
-            } else if (route.name === "Event") {
+            } else if (route.name === "AllEvents") {
               iconName = focused ? "calendar" : "calendar-outline";
             } else if (route.name === "Notifications") {
               iconName = focused ? "notifications" : "notifications-outline";
-            } else if (route.name === "Profile") {
+            } else if (route.name === "RegistrationScreen") {
               iconName = focused ? "person" : "person-outline";
             }
 
@@ -41,7 +43,8 @@ export default function App(){
       >
         <Tab.Screen name="Home" component={HomeScreen} />
         <Tab.Screen name="Notifications" component={NotificationScreen} />
-        
+        <Tab.Screen name="RegistrationScreen" component={RegistrationScreen} />
+        <Tab.Screen name="AllEvents" component={AllEvents} />
       </Tab.Navigator>
     </NavigationContainer>
   );
