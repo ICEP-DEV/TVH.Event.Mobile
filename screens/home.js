@@ -11,7 +11,8 @@ import {
 import { SearchBar, Card, Icon } from "react-native-elements";
 import api from "../APIs/API";
 
-const HomeScreen = ({ navigation }) => {
+
+const HomeScreen = () => {
   const [eventData, setEventData] = useState([]);
   const [search, setSearch] = useState("");
   const [filteredData, setFilteredData] = useState([]);
@@ -125,29 +126,22 @@ const formattedDate = (databaseDate) => {
           showsHorizontalScrollIndicator={false}
           style={styles.horizontalScroll}
         >
-          {filteredData.map((event, index) => (
+          {events.map((event, index) => (
             <Card containerStyle={styles.largeCard} key={index}>
               <Image
                 source={displayBlobAsImage(event.image)}
                 style={styles.largeEventImage}
               />
               <View style={styles.dateContainer}>
-                <Text style={styles.dateText}>
-                  {formattedDate(event.start_date)}
-                </Text>
+                <Text style={styles.dateText}>{event.date}</Text>
               </View>
               <View style={styles.eventInfo}>
-                <Text style={styles.eventName}>{event.title}</Text>
-                <View style={styles.locationContainer}>
-                  <Image
-                    resizeMode="contain"
-                    source={require("../assets/pin.png")}
-                    style={styles.locationIcon}
-                  />
-                  <Text style={styles.locationText}>{event.location}</Text>
-                </View>
+                <Text style={styles.eventName}>{event.name}</Text>
+                <Text style={styles.eventLocation}>{event.location}</Text>
               </View>
             </Card>
+            </TouchableOpacity>
+            
           ))}
         </ScrollView>
       </View>

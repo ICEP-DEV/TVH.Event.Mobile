@@ -1,14 +1,17 @@
 import { NavigationContainer } from "@react-navigation/native";
 import { createStackNavigator } from "@react-navigation/stack";
 import React from "react";
-import LoginScreen from "./screens/login";
+import LoginScreen from './screens/auth/login.js'
 import NotificationScreen from "./screens/Notifications.js";
 import HomeScreen from "./screens/home.js";
 import RegistrationScreen from "./screens/registration.js";
-import SignupScreen from "./screens/signup.js";
+import SignupScreen from './screens/auth/signup.js'
 import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
 import { Icon } from "react-native-elements";
 import AllEvents from "./screens/allEvents.js";
+import EventDetails from "./screens/eventdetails.js";
+import RegistrationForm from './screens/registrationform.js';
+
 
 const Stack = createStackNavigator();
 const Tab = createBottomTabNavigator();

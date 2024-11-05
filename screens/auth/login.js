@@ -3,6 +3,8 @@ import axios from 'axios';
 import { useState } from 'react';
 import { Alert, Dimensions, Pressable, ScrollView, StyleSheet, Text, TextInput, View } from 'react-native';
 import { Button } from 'react-native-elements';
+import api from '../../APIs/API';
+import { deleteAttendee, storeAttendee } from '../utils/auth';
 
 
 const { height, width } = Dimensions.get('window');
@@ -10,9 +12,6 @@ const { height, width } = Dimensions.get('window');
 export default function LoginScreen({navigation}){
     const [email, setEmail] = useState('')
     const [password, setPassword] = useState('')
-
-
-
 
     const userLogin = async() => {
         if(!email || !password){
@@ -23,13 +22,16 @@ export default function LoginScreen({navigation}){
         }
 
         await axios.post(
-            'http://192.168.0.115:3001/api/auth/mobile/login',
+            api + '/auth/mobile/login',
             {
                 email,
                 password
             }
         ).then(response => {
-            navigation.replace('Home')
+            //console.log(response.data['response'][0])\
+            deleteAttendee();
+            storeAttendee(response.data['token'], response.data['response'][0]);
+            navigation.replace('HomePage');
         }).catch((error) => {
             Alert.alert('Invalid Credentials','Please double check your email and password');
         })

@@ -1,14 +1,16 @@
-import React, { useState } from 'react';
-import { View, Text, StyleSheet, Dimensions, TextInput, ScrollView, Alert,   } from 'react-native';
-import { Button, CheckBox  } from 'react-native-elements';
-import axios from 'axios';
-import { Pressable } from 'react-native-gesture-handler';
 
+
+
+import React , {useState} from "react";
+import { ScrollView, Dimensions, View, Alert, StyleSheet, Text, TextInput, Pressable } from "react-native";
+import axios from 'axios';
+import api from '../../APIs/API';
+import { Button, CheckBox  } from 'react-native-elements';
 
 
 const { height, width } = Dimensions.get('window');
 
-export default function SignupScreen({ navigation }){
+export default function SignupScreen({navigation}){
 
     const [firstname, setFirstname] = useState('');
     const [lastname, setLastname] = useState('');
@@ -16,7 +18,6 @@ export default function SignupScreen({ navigation }){
     const [confirmPassword, setConfirmPassword] = useState('');
     const [password, setPassword] = useState('');
     const [checked, setChecked] = useState(false)
-
 
     const submitForm = async () =>{
 
@@ -43,7 +44,7 @@ export default function SignupScreen({ navigation }){
         }
 
         await axios.post(
-            'http://192.168.0.115:3001/api/auth/mobile/create',
+            api + '/auth/mobile/create',
             payload
         ).then(response =>{
             Alert.alert('Success', response.data.results);
@@ -60,7 +61,8 @@ export default function SignupScreen({ navigation }){
 
     }
 
-    return <ScrollView style={styles.MainScreen}>
+    return (
+        <ScrollView style={styles.MainScreen}>
         
         <View style={styles.Header}>
             <Text style={styles.HeadText}>Sign up</Text>
@@ -135,8 +137,8 @@ export default function SignupScreen({ navigation }){
             </Pressable>
         </View>
     </ScrollView>
+    );
 }
-
 
 
 
@@ -191,7 +193,8 @@ const styles = StyleSheet.create({
     },
     TermsText: {
         flex : 10,
-        flexShrink: 1, // Ensure the text doesn't push elements out of the row
+        flexShrink: 1, 
         marginRight : width * 0.05
       },
 })
+
