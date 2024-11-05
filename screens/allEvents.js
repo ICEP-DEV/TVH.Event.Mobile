@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState, useEffect } from "react";
 import {
   View,
   StyleSheet,
@@ -8,70 +8,81 @@ import {
   TextInput,
   TouchableOpacity,
 } from "react-native";
-
-const events = [
-  {
-    id: 1,
-    title: "ALX Hackathon",
-    date: "10\nJune",
-    image:
-      "https://cdn.builder.io/api/v1/image/assets/b7b650aa3c564f178973ced616a3bbb2/2e0f5546a0dda100eaee72677eac032cc83b0715937057726a668e45e8f6ac4c?apiKey=b7b650aa3c564f178973ced616a3bbb2&",
-    location: "Soshanguve South,\nPTA",
-  },
-  {
-    id: 2,
-    title: "GKHack '24",
-    date: "10\nJune",
-    image:
-      "https://cdn.builder.io/api/v1/image/assets/b7b650aa3c564f178973ced616a3bbb2/dc75f7d0f60462380902628fb3a751b03087575359cfbfd0ad3701e2c2bdeb9e?apiKey=b7b650aa3c564f178973ced616a3bbb2&",
-    location: "Soshanguve South,\nPTA",
-  },
-  {
-    id: 3,
-    title: "AWS Hackathon",
-    date: "10\nJune",
-    image:
-      "https://cdn.builder.io/api/v1/image/assets/b7b650aa3c564f178973ced616a3bbb2/97bc880b18f2bef778d16354a36dd039ee1fefad766b0b22b643091aa3b8e516?apiKey=b7b650aa3c564f178973ced616a3bbb2&",
-    location: "Soshanguve South,\nPTA",
-  },
-  {
-    id: 4,
-    title: "TVH",
-    date: "10\nJune",
-    image:
-      "https://cdn.builder.io/api/v1/image/assets/b7b650aa3c564f178973ced616a3bbb2/25f22e1aa821631e11a8ad68d2f1ea2838f2096367f8fe00b4d4f5d9cd98a51b?apiKey=b7b650aa3c564f178973ced616a3bbb2&",
-    location: "Soshanguve South,\nPTA",
-  },
-];
+import api from "../APIs/API";
+import axios from "axios";
+import { useNavigation } from "@react-navigation/native";
 
 // Main Component: AllEvents
 function AllEvents() {
+  const navigation = useNavigation();
+
+  const [allevents, setAllEvents] = useState([]);
+  const [title, setTitle] = useState("");
+  const [description, setDescription] = useState("");
+  const [time, setTime] = useState("");
+  const [location, setLocation] = useState("");
+  const [start_date, setStart_date] = useState("");
+  const [end_date, setEnd_date] = useState("");
+  const [category, setCategory] = useState([]);
+  const [image, setImage] = useState(null);
+
+  useEffect(() => {
+    const getAllEvents = async () => {
+      try {
+        const response = await axios.get(api + "/event/all");
+        setAllEvents(response.data.results);
+      } catch (error) {
+        console.log(error);
+      }
+    };
+
+    const getAllCategories = async () => {
+      try {
+        const response = await axios.get(api + "category/all");
+        setCategory(response.data.results);
+      } catch (error) {
+        console.log(error);
+      }
+    };
+
+    getAllEvents();
+    getAllCategories();
+  }, []);
+
+  const formattedDate = (databaseDate) => {
+    const date = new Date(databaseDate);
+    return date.toLocaleDateString("en-GB", {
+      day: "numeric",
+      month: "short",
+    });
+  };
+
+  const displayBlobAsImage = (blobData) => {
+    // Convert the blob to a Base64 string
+    const base64Image = `data:image/jpeg;base64,${blobData}`;
+    return { uri: base64Image };
+  };
+
   return (
     <View style={styles.container}>
-      {/* Status Bar */}
-      
-
       <ScrollView contentContainerStyle={styles.scrollContent}>
-        {/* Search Bar */}
-        
-
-        
-
-        {/* Event Cards */}
         <View style={styles.eventList}>
-          {events.map((event) => (
-            <View key={event.id} style={styles.eventCardContainer}>
-              <Image source={{ uri: event.image }} style={styles.eventImage} />
+          {allevents.map((event) => (
+            <View key={event.event_id} style={styles.eventCardContainer}>
+              <Image
+                source={displayBlobAsImage(event.image)}
+                style={styles.eventImage}
+              />
               <View style={styles.dateContainer}>
-                <Text style={styles.dateText}>{event.date}</Text>
+                <Text style={styles.dateText}>
+                  {formattedDate(event.start_date)}
+                </Text>
               </View>
               <Text style={styles.eventTitle}>{event.title}</Text>
               <View style={styles.locationContainer}>
                 <Image
                   resizeMode="contain"
-                  source={{
-                    uri: "https://cdn.builder.io/api/v1/image/assets/b7b650aa3c564f178973ced616a3bbb2/8e3b3bc5bfaa13b728e4d3e40c920eb3f3a83fe0504652e27f31767e38e41870?apiKey=b7b650aa3c564f178973ced616a3bbb2&",
-                  }}
+                  source={require("../assets/pin.png")}
                   style={styles.locationIcon}
                 />
                 <Text style={styles.locationText}>{event.location}</Text>
@@ -80,7 +91,10 @@ function AllEvents() {
                 <TouchableOpacity style={styles.viewButton}>
                   <Text style={styles.viewButtonText}>View</Text>
                 </TouchableOpacity>
-                <TouchableOpacity style={styles.registerButton}>
+                <TouchableOpacity
+                  style={styles.registerButton}
+                  onPress={() => navigation.navigate("Register")} // Navigate to Register screen
+                >
                   <Text style={styles.registerButtonText}>Register</Text>
                 </TouchableOpacity>
               </View>
@@ -170,7 +184,9 @@ const styles = StyleSheet.create({
   locationContainer: {
     flexDirection: "row",
     alignItems: "center",
-    marginTop: 8,
+    margin: 0,
+    padding: 0,
+    height: 30,
   },
   locationIcon: { width: 16, marginRight: 5 },
   locationText: {
@@ -221,5 +237,4 @@ const styles = StyleSheet.create({
     textAlign: "center",
   },
 });
-
 export default AllEvents;

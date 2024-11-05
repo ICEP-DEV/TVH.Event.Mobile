@@ -47,7 +47,6 @@ const styles = StyleSheet.create({
   timeText: {
     color: "rgba(25, 25, 26, 1)",
     fontSize: 15,
-    fontFamily: "Nunito, sans-serif",
     fontWeight: "600",
     letterSpacing: -0.3,
     textAlign: "center",

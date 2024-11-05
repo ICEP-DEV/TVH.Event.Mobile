@@ -47,7 +47,6 @@ const styles = StyleSheet.create({
   },
   titleContainer: {
     marginTop: 4,
-    fontFamily: "Poppins, sans-serif",
   },
   registrationText: {
     fontSize: 22,

@@ -76,7 +76,6 @@ const styles = StyleSheet.create({
   submitButtonText: {
     color: "white",
     textAlign: "center",
-    fontFamily: "Nunito, sans-serif",
     fontSize: 14,
     fontWeight: "900",
     letterSpacing: 1,

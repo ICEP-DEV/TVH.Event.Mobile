@@ -1,6 +1,5 @@
-// HomeScreen.js
 import axios from "axios";
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import {
   View,
   Text,
@@ -12,44 +11,52 @@ import {
 import { SearchBar, Card, Icon } from "react-native-elements";
 import api from "../APIs/API";
 
-
 const HomeScreen = ({ navigation }) => {
   const [eventData, setEventData] = useState([]);
+  const [search, setSearch] = useState("");
+  const [filteredData, setFilteredData] = useState([]);
+  const [error, setError] = useState(null);
 
-  useState(() => {
+  useEffect(() => {
     const getAllEvents = async () => {
       try {
         const events = await axios.get(api + "/event/all");
         setEventData(events.data.results);
+        setFilteredData(events.data.results); // Set initial filtered data
       } catch (error) {
         console.log(error);
+        setError("Failed to load events. Please try again later.");
       }
     };
 
     getAllEvents();
-  });
+  }, []);
 
-  const events = [
-    {
-      date: "10 JUNE",
-      name: "ALX Hackathon",
-      location: "Soshanguve South, PTA",
-      imageSource: require("../assets/alx.jpg"),
-    },
-    {
-      date: "28 OCT",
-      name: "GKHack '23",
-      location: "Sandton, JHB",
-      imageSource: require("../assets/gks.png"),
-    },
-    {
-      date: "16 Nov",
-      name: "AWS Hackathon",
-      location: "Sandton Convention Center, JHB",
-      imageSource: require("../assets/aws heckathon.jpg"),
-    },
-    // Add more events as needed
-  ];
+  const handleSearch = (query) => {
+    setSearch(query);
+    if (query) {
+      const filtered = eventData.filter((event) =>
+        event.name.toLowerCase().includes(query.toLowerCase())
+      );
+      setFilteredData(filtered);
+    } else {
+      setFilteredData(eventData); // Reset to all events if query is empty
+    }
+  };
+
+  const displayBlobAsImage = (blobData) => {
+    // Convert the blob to a Base64 string
+    const base64Image = `data:image/jpeg;base64,${blobData}`;
+    return { uri: base64Image };
+  };
+
+const formattedDate = (databaseDate) => {
+  const date = new Date(databaseDate);
+  return date.toLocaleDateString("en-GB", {
+    day: "numeric",
+    month: "short",
+  });
+};
 
   return (
     <ScrollView style={styles.container}>
@@ -61,13 +68,20 @@ const HomeScreen = ({ navigation }) => {
           round
           containerStyle={styles.searchBar}
           inputContainerStyle={styles.searchInput}
+          value={search}
+          onChangeText={handleSearch}
         />
       </View>
 
+      {/* Error Message */}
+      {error && <Text style={styles.errorText}>{error}</Text>}
+
       {/* Explore Events Section */}
       <View style={styles.sectionContainer}>
-        <Text style={styles.sectionTitle}>Explore our Events</Text>
-        <Text style={styles.seeAllText}>See All</Text>
+        <View style={styles.sectionHeader}>
+          <Text style={styles.sectionTitle}>Explore our Events</Text>
+        </View>
+
         <ScrollView
           horizontal
           showsHorizontalScrollIndicator={false}
@@ -78,7 +92,6 @@ const HomeScreen = ({ navigation }) => {
               source={require("../assets/hero.jpg")}
               style={styles.eventImage}
             />
-
             <Text style={styles.cardTitle}>Hackathons</Text>
           </Card>
           <Card containerStyle={styles.card}>
@@ -86,56 +99,55 @@ const HomeScreen = ({ navigation }) => {
               source={require("../assets/sem.jpg")}
               style={styles.eventImage}
             />
-            <Text style={styles.cardTitle}>Seminar</Text>
+            <Text style={styles.cardTitle}>Seminars</Text>
           </Card>
           <Card containerStyle={styles.card}>
             <Image
-              source={require("../assets/Free Vector _ Hand drawn webinar concept with woman.jpg")}
+              source={require("../assets/sem.jpg")}
               style={styles.eventImage}
             />
-            <Text style={styles.cardTitle}>Webinar</Text>
+            <Text style={styles.cardTitle}>Webinars</Text>
           </Card>
         </ScrollView>
       </View>
 
       {/* Upcoming Events Section */}
       <View style={styles.sectionContainer}>
-        <Text style={styles.sectionTitle}>Upcoming Events</Text>
-        <Text style={styles.seeAllText}>See All</Text>
+        <View style={styles.sectionHeader}>
+          <Text style={styles.sectionTitle}>Upcoming Events</Text>
+          <TouchableOpacity onPress={() => navigation.navigate("AllEvents")}>
+            <Text style={styles.seeAllText}>See All</Text>
+          </TouchableOpacity>
+        </View>
+
         <ScrollView
           horizontal
           showsHorizontalScrollIndicator={false}
           style={styles.horizontalScroll}
         >
-          {eventData.map((event, index) => (
-            <TouchableOpacity 
-              key={index}
-              onPress={
-                ()=>{
-                  navigation.navigate('EventDetails', {event})
-                  //print("Clicked")
-                }
-              }
-              >
-              <Card containerStyle={styles.largeCard} >
+          {filteredData.map((event, index) => (
+            <Card containerStyle={styles.largeCard} key={index}>
               <Image
-                source={require("../assets/alx.jpg")}
+                source={displayBlobAsImage(event.image)}
                 style={styles.largeEventImage}
               />
               <View style={styles.dateContainer}>
-                {/*   
-                <Text style={styles.dateText}>{event.start_date.split('T')[0]}</Text>
-                */}
+                <Text style={styles.dateText}>
+                  {formattedDate(event.start_date)}
+                </Text>
               </View>
               <View style={styles.eventInfo}>
                 <Text style={styles.eventName}>{event.title}</Text>
-                <Text style={styles.eventLocation}>{event.location}</Text>
-                <Text style={{}}>{event.start_date.split('T')[0]}</Text>
-                <Text style={{}}>{event.time.split('T')[1].split('.')[0]}</Text>
+                <View style={styles.locationContainer}>
+                  <Image
+                    resizeMode="contain"
+                    source={require("../assets/pin.png")}
+                    style={styles.locationIcon}
+                  />
+                  <Text style={styles.locationText}>{event.location}</Text>
+                </View>
               </View>
             </Card>
-            </TouchableOpacity>
-            
           ))}
         </ScrollView>
       </View>
@@ -169,12 +181,20 @@ const styles = StyleSheet.create({
     fontWeight: "bold",
     marginBottom: 5,
   },
+  sectionHeader: {
+    flexDirection: "row",
+    justifyContent: "space-between",
+    alignItems: "center",
+    marginBottom: 0,
+    marginTop: 10,
+  },
   seeAllText: {
     position: "absolute",
     right: 15,
     fontSize: 14,
     color: "#007AFF",
-    marginTop: 5,
+    marginTop: 0,
+    marginBottom: 10,
   },
   horizontalScroll: {
     marginTop: 10,
@@ -197,7 +217,7 @@ const styles = StyleSheet.create({
   },
   largeCard: {
     width: 200,
-    height: 240,
+    height: 220,
     borderRadius: 10,
     padding: 0,
     marginHorizontal: 5,
@@ -228,9 +248,18 @@ const styles = StyleSheet.create({
     fontWeight: "bold",
     marginVertical: 5,
   },
-  eventLocation: {
-    fontSize: 12,
-    color: "#8F8F8F",
+  locationContainer: {
+    flexDirection: "row",
+    alignItems: "center",
+    margin: 0,
+    padding: 0,
+    height: 40,
+  },
+  locationIcon: { width: 16, marginRight: 5 },
+  locationText: {
+    fontSize: 13,
+    color: "rgba(43, 40, 73, 0.5)",
+    fontWeight: "900",
   },
 });
 
