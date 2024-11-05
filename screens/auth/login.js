@@ -28,7 +28,7 @@ export default function LoginScreen({navigation}){
                 password
             }
         ).then(response => {
-            //console.log(response.data['response'][0])\
+
             deleteAttendee();
             storeAttendee(response.data['token'], response.data['response'][0]);
             navigation.replace('HomePage');

@@ -1,7 +1,7 @@
 import React, {useState} from "react";
 import axios from "axios";
 import api from "../APIs/API";
-import {ScrollView, StyleSheet, Text, TextInput, View, Dimensions, Button} from "react-native"
+import {ScrollView, StyleSheet, Text, TextInput, View, Dimensions, Button, Alert} from "react-native"
 import AsyncStorage from '@react-native-async-storage/async-storage';
 
 const { height, width } = Dimensions.get('window');
@@ -37,15 +37,22 @@ export default function RegistrationForm({route, navigation}){
 
     const submitForm = async()=>{
         const payload = {
-            attendee_id : AsyncStorage.getItem('attendee_id'),
+            attendee_id : await AsyncStorage.getItem('attendee_id'),
             reg_form_id : form_id,
-            response : answers
+            response : answers,
+            questions
         }
         await axios.post(
             api + '/register/submit',
             payload
         ).then((response) =>{
-
+            
+            Alert.alert(response.data.message);
+            if(response.status == 200){
+                navigation.replace('HomePage');
+            }else{
+                console.log("error")
+            }
         }).catch((error) =>{
             console.log(error)
         })

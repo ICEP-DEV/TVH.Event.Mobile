@@ -14,7 +14,7 @@ const storeAttendee = async (token, attendee) => {
 const getAttendee = async () => {
     try{
         const token = await AsyncStorage.getItem('token')
-        return token !== null ? token : null
+        return token
     }catch(error){
         console.error('Error retrieving token:', error);
     }
