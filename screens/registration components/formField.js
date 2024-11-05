@@ -29,12 +29,10 @@ const styles = StyleSheet.create({
   },
   numberText: {
     fontSize: 22,
-    fontFamily: "Poppins, sans-serif",
     fontWeight: "500",
   },
   labelText: {
     fontSize: 14,
-    fontFamily: "Poppins, sans-serif",
     fontWeight: "500",
     alignSelf: "center",
   },

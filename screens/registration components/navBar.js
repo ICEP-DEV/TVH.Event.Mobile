@@ -75,7 +75,6 @@ const styles = StyleSheet.create({
   navLabel: {
     fontSize: 12,
     color: "rgba(102, 102, 102, 1)",
-    fontFamily: "Poppins, sans-serif",
     marginTop: 4,
   },
 });
