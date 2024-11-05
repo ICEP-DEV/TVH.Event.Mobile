@@ -1,10 +1,10 @@
-import { Dimensions, ScrollView, StyleSheet, Text, View, Image } from 'react-native';
+import { Dimensions, ScrollView, StyleSheet, Text, View, Image, TextInput } from 'react-native';
 import React, { useEffect, useState } from 'react';
 import { Button } from 'react-native-elements';
-import { Buffer } from 'buffer';
 import { TouchableOpacity } from 'react-native-gesture-handler';
 import { IconButton } from 'react-native-paper';
-import getAuth from './utils/auth';
+import { getAttendee } from './utils/auth';
+
 
 
 
@@ -12,7 +12,7 @@ import getAuth from './utils/auth';
 const { height, width } = Dimensions.get('window');
 
 
-export default function EventDetails({ route }){
+export default function EventDetails({ route, navigation }){
     const {event} = route.params
 
 
@@ -20,9 +20,9 @@ export default function EventDetails({ route }){
     const [isLogged, setIsLogged] = useState(null)
 
     useEffect(() => {
-        //setIsLogged = getAuth();
+        setIsLogged(getAttendee());
         if (event.image) {
-          const base64String = Buffer.from(event.image, 'binary').toString('base64');
+          //const base64String = Buffer.from(event.image, 'binary').toString('base64');
 
           setImageUri(`data:image/jpeg;base64,${event.image}`);
         }
@@ -57,16 +57,18 @@ export default function EventDetails({ route }){
                 <Text style={styles.Text}>
                     {event.location}
                 </Text>
+                <Button title={"Register For Event"}
+                    onPress={()=>{
+                        if(isLogged !== null){
+                            navigation.navigate('RegisterForm', event.event_id)
+                        }
+                        else{
+                            navigation.replace('Login')
+                        }
 
-                {
-                    isLogged !== null ?
-                        (
-                            <Button title={"Register For Event"}/>
-                        )
-                        : ( 
-                            <Button  title={"Login to Register For Event"}/>
-                        )
-                }
+                    }}
+                />
+
                 
             </View>
         </ScrollView>

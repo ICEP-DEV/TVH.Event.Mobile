@@ -1,6 +1,6 @@
 import { NavigationContainer } from "@react-navigation/native";
 import { createStackNavigator } from "@react-navigation/stack";
-import React, { useState } from "react";
+import React from "react";
 import LoginScreen from './screens/auth/login.js'
 import NotificationScreen from "./screens/Notifications.js";
 import HomeScreen from './screens/home.js'
@@ -10,7 +10,7 @@ import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
 import { Icon } from "react-native-elements";
 import AllEvents from "./screens/allEvents.js";
 import EventDetails from "./screens/eventdetails.js";
-
+import RegistrationForm from './screens/registrationform.js';
 
 
 const Stack = createStackNavigator();
@@ -52,11 +52,12 @@ export default function App(){
 
   return (
     <NavigationContainer>
-      <Stack.Navigator screenOptions={{ headerShown: false }}>
+      <Stack.Navigator screenOptions={{ headerShown: false }} initialRouteName="HomePage">
         <Stack.Screen name="HomePage" component={TabNavigator} />
         <Stack.Screen name="EventDetails" component={EventDetails} />
         <Stack.Screen name="Login" component={LoginScreen} />
         <Stack.Screen name="Signup" component={SignupScreen} />
+        <Stack.Screen name="RegisterForm" component={RegistrationForm}/>
       </Stack.Navigator>
     </NavigationContainer>
   );
