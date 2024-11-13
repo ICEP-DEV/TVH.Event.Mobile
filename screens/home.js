@@ -10,6 +10,7 @@ import {
 } from "react-native";
 import { SearchBar, Card, Icon } from "react-native-elements";
 import api from "../APIs/API";
+import { deleteAttendee } from "./utils/auth";
 
 const HomeScreen = ({ navigation }) => {
   const [eventData, setEventData] = useState([]);
@@ -126,28 +127,38 @@ const formattedDate = (databaseDate) => {
           style={styles.horizontalScroll}
         >
           {filteredData.map((event, index) => (
-            <Card containerStyle={styles.largeCard} key={index}>
-              <Image
-                source={displayBlobAsImage(event.image)}
-                style={styles.largeEventImage}
-              />
-              <View style={styles.dateContainer}>
-                <Text style={styles.dateText}>
-                  {formattedDate(event.start_date)}
-                </Text>
-              </View>
-              <View style={styles.eventInfo}>
-                <Text style={styles.eventName}>{event.title}</Text>
-                <View style={styles.locationContainer}>
-                  <Image
-                    resizeMode="contain"
-                    source={require("../assets/pin.png")}
-                    style={styles.locationIcon}
-                  />
-                  <Text style={styles.locationText}>{event.location}</Text>
+            <TouchableOpacity 
+              key={index}
+              onPress={
+                ()=>{
+                  navigation.navigate('EventDetails', {event})
+                  //print("Clicked")
+                }
+              }
+            >
+              <Card containerStyle={styles.largeCard} >
+                <Image
+                  source={displayBlobAsImage(event.image)}
+                  style={styles.largeEventImage}
+                />
+                <View style={styles.dateContainer}>
+                  <Text style={styles.dateText}>
+                    {formattedDate(event.start_date)}
+                  </Text>
                 </View>
-              </View>
-            </Card>
+                <View style={styles.eventInfo}>
+                  <Text style={styles.eventName}>{event.title}</Text>
+                  <View style={styles.locationContainer}>
+                    <Image
+                      resizeMode="contain"
+                      source={require("../assets/pin.png")}
+                      style={styles.locationIcon}
+                    />
+                    <Text style={styles.locationText}>{event.location}</Text>
+                  </View>
+                </View>
+              </Card>
+            </TouchableOpacity>
           ))}
         </ScrollView>
       </View>
