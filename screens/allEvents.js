@@ -93,7 +93,7 @@ function AllEvents() {
                 </TouchableOpacity>
                 <TouchableOpacity
                   style={styles.registerButton}
-                  onPress={() => navigation.navigate("Register")} // Navigate to Register screen
+                  onPress={() => navigation.navigate("Register")} // Navigate to Register screen due
                 >
                   <Text style={styles.registerButtonText}>Register</Text>
                 </TouchableOpacity>
