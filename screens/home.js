@@ -126,7 +126,7 @@ const formattedDate = (databaseDate) => {
           showsHorizontalScrollIndicator={false}
           style={styles.horizontalScroll}
         >
-          {filteredData.map((event, index) => (
+          {filteredData.slice(0, 6).map((event, index) => (
             <TouchableOpacity 
               key={index}
               onPress={
