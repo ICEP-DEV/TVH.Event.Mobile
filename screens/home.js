@@ -162,6 +162,57 @@ const formattedDate = (databaseDate) => {
           ))}
         </ScrollView>
       </View>
+
+      {/* Previous Events Section */}
+            <View style={styles.sectionContainer}>
+              <View style={styles.sectionHeader}>
+                <Text style={styles.sectionTitle}>Previous Events</Text>
+                <TouchableOpacity onPress={() => navigation.navigate("AllEvents")}>
+                  <Text style={styles.seeAllText}>See All</Text>
+                </TouchableOpacity>
+              </View>
+
+              <ScrollView
+                horizontal
+                showsHorizontalScrollIndicator={false}
+                style={styles.horizontalScroll}
+              >
+                {filteredData.slice(0, 6).map((event, index) => (
+                  <TouchableOpacity
+                    key={index}
+                    onPress={
+                      ()=>{
+                        navigation.navigate('EventDetails', {event})
+                        //print("Clicked")
+                      }
+                    }
+                  >
+                    <Card containerStyle={styles.largeCard} >
+                      <Image
+                        source={displayBlobAsImage(event.image)}
+                        style={styles.largeEventImage}
+                      />
+                      <View style={styles.dateContainer}>
+                        <Text style={styles.dateText}>
+                          {formattedDate(event.start_date)}
+                        </Text>
+                      </View>
+                      <View style={styles.eventInfo}>
+                        <Text style={styles.eventName}>{event.title}</Text>
+                        <View style={styles.locationContainer}>
+                          <Image
+                            resizeMode="contain"
+                            source={require("../assets/pin.png")}
+                            style={styles.locationIcon}
+                          />
+                          <Text style={styles.locationText}>{event.location}</Text>
+                        </View>
+                      </View>
+                    </Card>
+                  </TouchableOpacity>
+                ))}
+              </ScrollView>
+            </View>
     </ScrollView>
   );
 };
