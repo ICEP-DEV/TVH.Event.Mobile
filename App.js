@@ -11,6 +11,7 @@ import { Icon } from "react-native-elements";
 import AllEvents from "./screens/allEvents.js";
 import EventDetails from "./screens/eventdetails.js";
 import RegistrationForm from './screens/registrationform.js';
+import FeedbackAndReview from "./screens/feedback_and_review/feedback.js";
 
 
 const Stack = createStackNavigator();
@@ -38,14 +39,14 @@ function TabNavigator() {
         tabBarInactiveTintColor: "gray",
       })}
     >
-      <Tab.Screen name="Home" component={HomeScreen} />
+      <Tab.Screen name="Home" component={FeedbackAndReview} />
       <Tab.Screen name="Notifications" component={NotificationScreen} />
       <Tab.Screen name="Registration" component={RegistrationScreen} />
       <Tab.Screen name="AllEvents" component={AllEvents} />
     </Tab.Navigator>
   );
 }
-
+  
 
 export default function App(){
 
