@@ -1,10 +1,12 @@
-import { Dimensions, ScrollView, StyleSheet, Text, View, Image, TextInput } from 'react-native';
+import { Dimensions, ScrollView, StyleSheet, Text, View, Image, TextInput, Alert } from 'react-native';
 import React, { useEffect, useState } from 'react';
 import { Button } from 'react-native-elements';
 import { TouchableOpacity } from 'react-native-gesture-handler';
 import { IconButton } from 'react-native-paper';
-import { getAttendee } from './utils/auth';
-
+import { deleteAttendee, getAttendee } from './utils/auth';
+import axios from 'axios';
+import api from '../APIs/API';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 
 
 
@@ -15,19 +17,53 @@ const { height, width } = Dimensions.get('window');
 export default function EventDetails({ route, navigation }){
     const {event} = route.params
 
-
     const [imageUri, setImageUri] = useState(null);
-    const [isLogged, setIsLogged] = useState(null)
+    const [isLogged, setIsLogged] = useState(null);
+    const [isRegistered, setIsRegistered] = useState(false)
 
-    useEffect(() => {
-        setIsLogged(getAttendee());
+
+      useState(()=>{
+        
         if (event.image) {
           //const base64String = Buffer.from(event.image, 'binary').toString('base64');
-
           setImageUri(`data:image/jpeg;base64,${event.image}`);
         }
-      }, [event.image]);
 
+        
+        const getRegistered = async()=>{
+            const attendee = await AsyncStorage.getItem('attendee_id')
+            setIsLogged(attendee)
+            try{
+                const attendee_id = await AsyncStorage.getItem("attendee_id")
+                const payload = {
+                    "attendee_id" : attendee_id,
+                    "event" : event.event_id,
+                }
+                await axios.post(
+                    api + '/register/checkattendee',
+                    payload
+                ).then((response) =>{
+                    if(response.data['message']){
+                        setIsRegistered(true)
+                    }
+                }) 
+            }catch(error){
+                console.log(error)
+            }
+        }
+        getRegistered();
+      });
+
+
+      const toRegister = async()=>{
+        
+        if(isRegistered ){
+            Alert.alert("You have already registered")
+        }
+        else{
+            navigation.navigate('RegisterForm', event.event_id)
+        }
+      }
     return(
         <ScrollView>
             <View style={styles.NavBar}>
@@ -59,8 +95,9 @@ export default function EventDetails({ route, navigation }){
                 </Text>
                 <Button title={"Register For Event"}
                     onPress={()=>{
+                        console.log(isLogged)
                         if(isLogged !== null){
-                            navigation.navigate('RegisterForm', event.event_id)
+                            toRegister()
                         }
                         else{
                             navigation.replace('Login')
@@ -68,6 +105,7 @@ export default function EventDetails({ route, navigation }){
 
                     }}
                 />
+                
 
                 
             </View>
@@ -104,5 +142,3 @@ const styles = StyleSheet.create({
     },
 
 });
-
-

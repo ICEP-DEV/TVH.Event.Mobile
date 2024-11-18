@@ -88,7 +88,10 @@ function AllEvents() {
                 <Text style={styles.locationText}>{event.location}</Text>
               </View>
               <View style={styles.buttonContainer}>
-                <TouchableOpacity style={styles.viewButton}>
+                <TouchableOpacity
+                  style={styles.viewButton}
+                  onPress={() => navigation.navigate("EventDetails")}
+                >
                   <Text style={styles.viewButtonText}>View</Text>
                 </TouchableOpacity>
                 <TouchableOpacity

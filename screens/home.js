@@ -10,6 +10,7 @@ import {
 } from "react-native";
 import { SearchBar, Card, Icon } from "react-native-elements";
 import api from "../APIs/API";
+import { deleteAttendee } from "./utils/auth";
 
 const HomeScreen = ({ navigation }) => {
   const [eventData, setEventData] = useState([]);
@@ -36,7 +37,7 @@ const HomeScreen = ({ navigation }) => {
     setSearch(query);
     if (query) {
       const filtered = eventData.filter((event) =>
-        event.name.toLowerCase().includes(query.toLowerCase())
+          event.name.toLowerCase().includes(query.toLowerCase())
       );
       setFilteredData(filtered);
     } else {
@@ -50,108 +51,118 @@ const HomeScreen = ({ navigation }) => {
     return { uri: base64Image };
   };
 
-const formattedDate = (databaseDate) => {
-  const date = new Date(databaseDate);
-  return date.toLocaleDateString("en-GB", {
-    day: "numeric",
-    month: "short",
-  });
-};
+  const formattedDate = (databaseDate) => {
+    const date = new Date(databaseDate);
+    return date.toLocaleDateString("en-GB", {
+      day: "numeric",
+      month: "short",
+    });
+  };
 
   return (
-    <ScrollView style={styles.container}>
-      {/* Search Bar */}
-      <View style={styles.searchContainer}>
-        <SearchBar
-          placeholder="What are you looking for?"
-          lightTheme
-          round
-          containerStyle={styles.searchBar}
-          inputContainerStyle={styles.searchInput}
-          value={search}
-          onChangeText={handleSearch}
-        />
-      </View>
-
-      {/* Error Message */}
-      {error && <Text style={styles.errorText}>{error}</Text>}
-
-      {/* Explore Events Section */}
-      <View style={styles.sectionContainer}>
-        <View style={styles.sectionHeader}>
-          <Text style={styles.sectionTitle}>Explore our Events</Text>
+      <ScrollView style={styles.container}>
+        {/* Search Bar */}
+        <View style={styles.searchContainer}>
+          <SearchBar
+              placeholder="What are you looking for?"
+              lightTheme
+              round
+              containerStyle={styles.searchBar}
+              inputContainerStyle={styles.searchInput}
+              value={search}
+              onChangeText={handleSearch}
+          />
         </View>
 
-        <ScrollView
-          horizontal
-          showsHorizontalScrollIndicator={false}
-          style={styles.horizontalScroll}
-        >
-          <Card containerStyle={styles.card}>
-            <Image
-              source={require("../assets/hero.jpg")}
-              style={styles.eventImage}
-            />
-            <Text style={styles.cardTitle}>Hackathons</Text>
-          </Card>
-          <Card containerStyle={styles.card}>
-            <Image
-              source={require("../assets/sem.jpg")}
-              style={styles.eventImage}
-            />
-            <Text style={styles.cardTitle}>Seminars</Text>
-          </Card>
-          <Card containerStyle={styles.card}>
-            <Image
-              source={require("../assets/sem.jpg")}
-              style={styles.eventImage}
-            />
-            <Text style={styles.cardTitle}>Webinars</Text>
-          </Card>
-        </ScrollView>
-      </View>
+        {/* Error Message */}
+        {error && <Text style={styles.errorText}>{error}</Text>}
 
-      {/* Upcoming Events Section */}
-      <View style={styles.sectionContainer}>
-        <View style={styles.sectionHeader}>
-          <Text style={styles.sectionTitle}>Upcoming Events</Text>
-          <TouchableOpacity onPress={() => navigation.navigate("AllEvents")}>
-            <Text style={styles.seeAllText}>See All</Text>
-          </TouchableOpacity>
-        </View>
+        {/* Explore Events Section */}
+        <View style={styles.sectionContainer}>
+          <View style={styles.sectionHeader}>
+            <Text style={styles.sectionTitle}>Explore our Events</Text>
+          </View>
 
-        <ScrollView
-          horizontal
-          showsHorizontalScrollIndicator={false}
-          style={styles.horizontalScroll}
-        >
-          {filteredData.map((event, index) => (
-            <Card containerStyle={styles.largeCard} key={index}>
+          <ScrollView
+              horizontal
+              showsHorizontalScrollIndicator={false}
+              style={styles.horizontalScroll}
+          >
+            <Card containerStyle={styles.card}>
               <Image
-                source={displayBlobAsImage(event.image)}
-                style={styles.largeEventImage}
+                  source={require("../assets/hero.jpg")}
+                  style={styles.eventImage}
               />
-              <View style={styles.dateContainer}>
-                <Text style={styles.dateText}>
-                  {formattedDate(event.start_date)}
-                </Text>
-              </View>
-              <View style={styles.eventInfo}>
-                <Text style={styles.eventName}>{event.title}</Text>
-                <View style={styles.locationContainer}>
-                  <Image
-                    resizeMode="contain"
-                    source={require("../assets/pin.png")}
-                    style={styles.locationIcon}
-                  />
-                  <Text style={styles.locationText}>{event.location}</Text>
-                </View>
-              </View>
+              <Text style={styles.cardTitle}>Hackathons</Text>
             </Card>
-          ))}
-        </ScrollView>
-      </View>
-    </ScrollView>
+            <Card containerStyle={styles.card}>
+              <Image
+                  source={require("../assets/sem.jpg")}
+                  style={styles.eventImage}
+              />
+              <Text style={styles.cardTitle}>Seminars</Text>
+            </Card>
+            <Card containerStyle={styles.card}>
+              <Image
+                  source={require("../assets/sem.jpg")}
+                  style={styles.eventImage}
+              />
+              <Text style={styles.cardTitle}>Webinars</Text>
+            </Card>
+          </ScrollView>
+        </View>
+
+        {/* Upcoming Events Section */}
+        <View style={styles.sectionContainer}>
+          <View style={styles.sectionHeader}>
+            <Text style={styles.sectionTitle}>Upcoming Events</Text>
+            <TouchableOpacity onPress={() => navigation.navigate("AllEvents")}>
+              <Text style={styles.seeAllText}>See All</Text>
+            </TouchableOpacity>
+          </View>
+
+          <ScrollView
+              horizontal
+              showsHorizontalScrollIndicator={false}
+              style={styles.horizontalScroll}
+          >
+            {filteredData.map((event, index) => (
+                <TouchableOpacity
+                    key={index}
+                    onPress={
+                      ()=>{
+                        navigation.navigate('EventDetails', {event})
+                        //print("Clicked")
+                      }
+                    }
+                >
+                  <Card containerStyle={styles.largeCard} >
+                    <Image
+                        source={displayBlobAsImage(event.image)}
+                        style={styles.largeEventImage}
+                    />
+                    <View style={styles.dateContainer}>
+                      <Text style={styles.dateText}>
+                        {formattedDate(event.start_date)}
+                      </Text>
+                    </View>
+                    <View style={styles.eventInfo}>
+                      <Text style={styles.eventName}>{event.title}</Text>
+                      <View style={styles.locationContainer}>
+                        <Image
+                            resizeMode="contain"
+                            source={require("../assets/pin.png")}
+                            style={styles.locationIcon}
+                        />
+                        <Text style={styles.locationText}>{event.location}</Text>
+                      </View>
+                    </View>
+                  </Card>
+                </TouchableOpacity>
+            ))}
+          </ScrollView>
+        </View>
+      </ScrollView>
   );
 };
 

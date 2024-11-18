@@ -19,9 +19,16 @@ const Tab = createBottomTabNavigator();
 function HomeStack() {
   return (
     <Stack.Navigator>
-      <Stack.Screen name="Home" component={HomeScreen}  />
-      <Stack.Screen name="AllEvents" component={AllEvents} options={ { headerShown: true, title: "All Events", }} />
-      <Stack.Screen name="Register" component={RegistrationScreen} />
+      <Stack.Screen name="HomeScreen" component={HomeScreen} options={{headerShown: true, title: "Home" }} />
+      <Stack.Screen
+        name="AllEvents"
+        component={AllEvents}
+        options={{ headerShown: true, title: "All Events" }}
+      />
+      <Stack.Screen name="Register" component={RegistrationForm} />
+      <Stack.Screen name="EventDetails" component={EventDetails} />
+      <Stack.Screen name="Login" component={LoginScreen} />
+      <Stack.Screen name="Signup" component={SignupScreen} />
     </Stack.Navigator>
   );
 }

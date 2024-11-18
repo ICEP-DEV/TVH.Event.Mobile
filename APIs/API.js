@@ -1,3 +1,3 @@
-const api = "http://192.168.13.201:3001/api"; //make sure you use your own ip address here. But leave the port number
+const api = "http://10.200.101.103:3001/api"; //make sure you use your own ip address here. But leave the port number
 
 export default api;
