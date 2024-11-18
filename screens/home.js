@@ -11,12 +11,22 @@ import {
 import { SearchBar, Card, Icon } from "react-native-elements";
 import api from "../APIs/API";
 import { deleteAttendee } from "./utils/auth";
+import { subDays, isAfter, isSameDay, parseISO } from "date-fns";
 
 const HomeScreen = ({ navigation }) => {
   const [eventData, setEventData] = useState([]);
   const [search, setSearch] = useState("");
   const [filteredData, setFilteredData] = useState([]);
   const [error, setError] = useState(null);
+
+  const currentDate = new Date();
+  const fifteenDaysAgo = subDays(currentDate, 16);
+
+  const fromCurrent = (event) => {
+    const eventDate = parseISO(event.start_date);
+    const today = new Date();
+    return isAfter(eventDate, today) || isSameDay(eventDate, today);
+  };
 
   useEffect(() => {
     const getAllEvents = async () => {
@@ -51,13 +61,13 @@ const HomeScreen = ({ navigation }) => {
     return { uri: base64Image };
   };
 
-const formattedDate = (databaseDate) => {
-  const date = new Date(databaseDate);
-  return date.toLocaleDateString("en-GB", {
-    day: "numeric",
-    month: "short",
-  });
-};
+  const formattedDate = (databaseDate) => {
+    const date = new Date(databaseDate);
+    return date.toLocaleDateString("en-GB", {
+      day: "numeric",
+      month: "short",
+    });
+  };
 
   return (
     <ScrollView style={styles.container}>
@@ -126,93 +136,103 @@ const formattedDate = (databaseDate) => {
           showsHorizontalScrollIndicator={false}
           style={styles.horizontalScroll}
         >
-          {filteredData.slice(0, 6).map((event, index) => (
-            <TouchableOpacity 
-              key={index}
-              onPress={
-                ()=>{
-                  navigation.navigate('EventDetails', {event})
+          {filteredData
+            .filter((event) => {
+              const eventDate = parseISO(event.start_date);
+              const today = new Date();
+              return isAfter(eventDate, today) || isSameDay(eventDate, today);
+            })
+            .slice(0, 6)
+            .map((event, index) => (
+              <TouchableOpacity
+                key={index}
+                onPress={() => {
+                  navigation.navigate("EventDetails", { event });
                   //print("Clicked")
-                }
-              }
-            >
-              <Card containerStyle={styles.largeCard} >
-                <Image
-                  source={displayBlobAsImage(event.image)}
-                  style={styles.largeEventImage}
-                />
-                <View style={styles.dateContainer}>
-                  <Text style={styles.dateText}>
-                    {formattedDate(event.start_date)}
-                  </Text>
-                </View>
-                <View style={styles.eventInfo}>
-                  <Text style={styles.eventName}>{event.title}</Text>
-                  <View style={styles.locationContainer}>
-                    <Image
-                      resizeMode="contain"
-                      source={require("../assets/pin.png")}
-                      style={styles.locationIcon}
-                    />
-                    <Text style={styles.locationText}>{event.location}</Text>
+                }}
+              >
+                <Card containerStyle={styles.largeCard}>
+                  <Image
+                    source={displayBlobAsImage(event.image)}
+                    style={styles.largeEventImage}
+                  />
+                  <View style={styles.dateContainer}>
+                    <Text style={styles.dateText}>
+                      {formattedDate(event.start_date)}
+                    </Text>
                   </View>
-                </View>
-              </Card>
-            </TouchableOpacity>
-          ))}
+                  <View style={styles.eventInfo}>
+                    <Text style={styles.eventName}>{event.title}</Text>
+                    <View style={styles.locationContainer}>
+                      <Image
+                        resizeMode="contain"
+                        source={require("../assets/pin.png")}
+                        style={styles.locationIcon}
+                      />
+                      <Text style={styles.locationText}>{event.location}</Text>
+                    </View>
+                  </View>
+                </Card>
+              </TouchableOpacity>
+            ))}
         </ScrollView>
       </View>
 
-      {/* Previous Events Section */}
-            <View style={styles.sectionContainer}>
-              <View style={styles.sectionHeader}>
-                <Text style={styles.sectionTitle}>Previous Events</Text>
-                <TouchableOpacity onPress={() => navigation.navigate("AllEvents")}>
-                  <Text style={styles.seeAllText}>See All</Text>
-                </TouchableOpacity>
-              </View>
+      {/* Previous Events Section:
+          This section will show events that have already ended. I will show evens from the past 15 days
+      */}
+      <View style={styles.sectionContainer}>
+        <View style={styles.sectionHeader}>
+          <Text style={styles.sectionTitle}>Previous Events</Text>
+          <TouchableOpacity onPress={() => navigation.navigate("AllEvents")}>
+            <Text style={styles.seeAllText}>See All</Text>
+          </TouchableOpacity>
+        </View>
 
-              <ScrollView
-                horizontal
-                showsHorizontalScrollIndicator={false}
-                style={styles.horizontalScroll}
+        <ScrollView
+          horizontal
+          showsHorizontalScrollIndicator={false}
+          style={styles.horizontalScroll}
+        >
+          {filteredData
+            .filter((event) => {
+              const eventDate = new Date(event.end_date || event.start_date);
+              return eventDate <= currentDate && eventDate >= fifteenDaysAgo;
+            })
+            .slice(0, 6)
+            .map((event, index) => (
+              <TouchableOpacity
+                key={index}
+                onPress={() => {
+                  navigation.navigate("EventDetails", { event });
+                }}
               >
-                {filteredData.slice(0, 6).map((event, index) => (
-                  <TouchableOpacity
-                    key={index}
-                    onPress={
-                      ()=>{
-                        navigation.navigate('EventDetails', {event})
-                        //print("Clicked")
-                      }
-                    }
-                  >
-                    <Card containerStyle={styles.largeCard} >
+                <Card containerStyle={styles.largeCard}>
+                  <Image
+                    source={displayBlobAsImage(event.image)}
+                    style={styles.largeEventImage}
+                  />
+                  <View style={styles.dateContainer}>
+                    <Text style={styles.dateText}>
+                      {formattedDate(event.start_date)}
+                    </Text>
+                  </View>
+                  <View style={styles.eventInfo}>
+                    <Text style={styles.eventName}>{event.title}</Text>
+                    <View style={styles.locationContainer}>
                       <Image
-                        source={displayBlobAsImage(event.image)}
-                        style={styles.largeEventImage}
+                        resizeMode="contain"
+                        source={require("../assets/pin.png")}
+                        style={styles.locationIcon}
                       />
-                      <View style={styles.dateContainer}>
-                        <Text style={styles.dateText}>
-                          {formattedDate(event.start_date)}
-                        </Text>
-                      </View>
-                      <View style={styles.eventInfo}>
-                        <Text style={styles.eventName}>{event.title}</Text>
-                        <View style={styles.locationContainer}>
-                          <Image
-                            resizeMode="contain"
-                            source={require("../assets/pin.png")}
-                            style={styles.locationIcon}
-                          />
-                          <Text style={styles.locationText}>{event.location}</Text>
-                        </View>
-                      </View>
-                    </Card>
-                  </TouchableOpacity>
-                ))}
-              </ScrollView>
-            </View>
+                      <Text style={styles.locationText}>{event.location}</Text>
+                    </View>
+                  </View>
+                </Card>
+              </TouchableOpacity>
+            ))}
+        </ScrollView>
+      </View>
     </ScrollView>
   );
 };
