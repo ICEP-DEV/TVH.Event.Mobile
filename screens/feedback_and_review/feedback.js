@@ -13,6 +13,7 @@ import { Card, Button, Rating } from "react-native-elements";
 import { ScrollView } from "react-native-gesture-handler";
 import { ProgressBar } from "react-native-paper";
 import { Buffer } from "buffer";
+import { Picker } from '@react-native-picker/picker';
 import api from "../../APIs/API";
 import axios from "axios";
 
@@ -40,6 +41,21 @@ const FeedbackAndReview = ({ navigation }) => {
       }
     };
     getAllReviews();
+  }, []);
+
+  useEffect(() => {
+    const getAllEvents = async () => {
+      try {
+        const events = await axios.get(api + "/event/all");
+        setEventData(events.data.results);
+        setFilteredData(events.data.results); // Set initial filtered data
+      } catch (error) {
+        console.log(error);
+        setError("Failed to load events. Please try again later.");
+      }
+    };
+
+    getAllEvents();
   }, []);
 
   // Placeholder data for reviews
@@ -179,13 +195,23 @@ const FeedbackAndReview = ({ navigation }) => {
   const message = (data) => {
     return Buffer.from(data).toString("utf-8");
   };
-
+  const [selectedEvent, setSelectedEvent] = useState("GKHack '24");
+  const events = ["GKHack '24", "CodeFest '23", "TechExpo '22"];
   return (
     <View style={styles.container}>
       {/* Header */}
       <View style={styles.header}>
         <Text style={styles.headerText}>Feedback & Reviews</Text>
-        <Text style={styles.eventTitle}>GKHack '24</Text>
+        {/* Dropdown for Event Title */}
+        <Picker
+          selectedValue={selectedEvent}
+          style={styles.eventTitle}
+          onValueChange={(itemValue) => setSelectedEvent(itemValue)}
+        >
+          {events.map((event, index) => (
+            <Picker.Item key={index} label={event} value={event} />
+          ))}
+        </Picker>
       </View>
 
       {/* Rating Summary */}
@@ -299,6 +325,7 @@ const styles = StyleSheet.create({
   },
   header: {
     marginBottom: 20,
+    width: 200  
   },
   headerText: {
     fontSize: 20,

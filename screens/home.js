@@ -233,7 +233,7 @@ const HomeScreen = ({ navigation }) => {
             ))}
         </ScrollView>
       </View>
-    </ScrollView>
+</ScrollView>
   );
 };
 
