@@ -1,22 +1,34 @@
 import { max } from "date-fns";
-import {React, useState, useEffect} from "react";
+import { React, useState, useEffect } from "react";
 import {
   View,
   Text,
   StyleSheet,
-  FlatList,
+  Modal,
+  TextInput,
   Image,
   TouchableOpacity,
 } from "react-native";
 import { Card, Button, Rating } from "react-native-elements";
 import { ScrollView } from "react-native-gesture-handler";
 import { ProgressBar } from "react-native-paper";
-import { Buffer } from 'buffer';
+import { Buffer } from "buffer";
 import api from "../../APIs/API";
 import axios from "axios";
 
 const FeedbackAndReview = ({ navigation }) => {
   const [allReviews, setAllReviews] = useState([]);
+  const [modalVisible, setModalVisible] = useState(false);
+  const [reviewText, setReviewText] = useState("");
+  const [reviewRating, setReviewRating] = useState(0);
+
+  const submitReview = () => {
+    // Placeholder for submitting the review
+    console.log("Review Submitted:", reviewRating, reviewText);
+    setModalVisible(false); // Close the modal
+    setReviewText(""); // Reset input
+    setReviewRating(0); // Reset rating
+  };
 
   useEffect(() => {
     const getAllReviews = async () => {
@@ -29,6 +41,7 @@ const FeedbackAndReview = ({ navigation }) => {
     };
     getAllReviews();
   }, []);
+
   // Placeholder data for reviews
   const reviews = [
     {
@@ -220,16 +233,60 @@ const FeedbackAndReview = ({ navigation }) => {
                 <Text style={styles.reviewDate}>{item.date}</Text>
               </View>
               <Text style={styles.reviewText}>{item.feedback}</Text>
-             
             </Card>
           ))}
         </ScrollView>
       </View>
 
       {/* Write Review Button */}
-      <TouchableOpacity style={styles.writeReviewButton}>
+      <TouchableOpacity
+        style={styles.writeReviewButton}
+        onPress={() => setModalVisible(true)} // Open modal
+      >
         <Text style={styles.writeReviewText}>Write a review</Text>
       </TouchableOpacity>
+
+      {/* Review Modal */}
+      <Modal
+        animationType="slide"
+        transparent={true}
+        visible={modalVisible}
+        onRequestClose={() => setModalVisible(false)} // Close modal on back button
+      >
+        <View style={styles.modalOverlay}>
+          <View style={styles.modalContainer}>
+            <Text style={styles.modalTitle}>What is your review?</Text>
+
+            {/* Rating */}
+            <Rating
+              imageSize={30}
+              startingValue={reviewRating}
+              onFinishRating={(rating) => setReviewRating(rating)}
+              style={styles.ratingInput}
+            />
+
+            {/* Review Input */}
+            <Text style={styles.modalSubtitle}>
+              Please share your opinion about the hackathon
+            </Text>
+            <TextInput
+              style={styles.textInput}
+              placeholder="Your review"
+              multiline
+              value={reviewText}
+              onChangeText={(text) => setReviewText(text)}
+            />
+
+            {/* Submit Button */}
+            <TouchableOpacity
+              style={styles.submitButton}
+              onPress={submitReview}
+            >
+              <Text style={styles.submitButtonText}>SEND REVIEW</Text>
+            </TouchableOpacity>
+          </View>
+        </View>
+      </Modal>
     </View>
   );
 };
@@ -347,6 +404,55 @@ const styles = StyleSheet.create({
     marginTop: 10,
   },
   writeReviewText: {
+    fontSize: 16,
+    color: "#FFFFFF",
+    fontWeight: "bold",
+  },
+  modalOverlay: {
+    flex: 1,
+    justifyContent: "center",
+    alignItems: "center",
+    backgroundColor: "rgba(0, 0, 0, 0.5)",
+  },
+  modalContainer: {
+    width: "90%",
+    backgroundColor: "#FFFFFF",
+    borderRadius: 10,
+    padding: 20,
+    alignItems: "center",
+  },
+  modalTitle: {
+    fontSize: 18,
+    fontWeight: "bold",
+    marginBottom: 10,
+  },
+  modalSubtitle: {
+    fontSize: 14,
+    marginBottom: 20,
+    textAlign: "center",
+    color: "#757575",
+  },
+  ratingInput: {
+    marginVertical: 10,
+  },
+  textInput: {
+    width: "100%",
+    height: 100,
+    borderWidth: 1,
+    borderColor: "#E0E0E0",
+    borderRadius: 5,
+    padding: 10,
+    marginBottom: 20,
+    textAlignVertical: "top",
+  },
+  submitButton: {
+    backgroundColor: "#4CAF50",
+    paddingVertical: 12,
+    paddingHorizontal: 30,
+    borderRadius: 25,
+    alignItems: "center",
+  },
+  submitButtonText: {
     fontSize: 16,
     color: "#FFFFFF",
     fontWeight: "bold",
