@@ -16,12 +16,30 @@ import { Buffer } from "buffer";
 import { Picker } from '@react-native-picker/picker';
 import api from "../../APIs/API";
 import axios from "axios";
+import { subDays, isAfter, isSameDay, parseISO } from "date-fns";
 
 const FeedbackAndReview = ({ navigation }) => {
   const [allReviews, setAllReviews] = useState([]);
+  const [filteredData, setFilteredData] = useState([]);
+  const [eventData, setEventData] = useState([]);
   const [modalVisible, setModalVisible] = useState(false);
   const [reviewText, setReviewText] = useState("");
   const [reviewRating, setReviewRating] = useState(0);
+
+  useEffect(() => {
+    const getAllEvents = async () => {
+      try {
+        const events = await axios.get(api + "/event/all");
+        setEventData(events.data.results);
+        setFilteredData(events.data.results); // Set initial filtered data
+      } catch (error) {
+        console.log(error);
+        setError("Failed to load events. Please try again later.");
+      }
+    };
+
+    getAllEvents();
+  }, []);
 
   const submitReview = () => {
     // Placeholder for submitting the review
@@ -35,7 +53,7 @@ const FeedbackAndReview = ({ navigation }) => {
     const getAllReviews = async () => {
       try {
         const response = await axios.get(api + "/feedback/survey/1");
-        setAllReviews(response.data.results);
+        setAllReviews(response);
       } catch (error) {
         console.log(error);
       }
@@ -208,8 +226,15 @@ const FeedbackAndReview = ({ navigation }) => {
           style={styles.eventTitle}
           onValueChange={(itemValue) => setSelectedEvent(itemValue)}
         >
-          {events.map((event, index) => (
-            <Picker.Item key={index} label={event} value={event} />
+          {eventData
+            .filter((event) => {
+              const eventDate = parseISO(event.start_date);
+              const today = new Date();
+              return isAfter(eventDate, today) || isSameDay(eventDate, today);
+            })
+            .slice(0, 6)
+            .map((event, index) => (
+            <Picker.Item key={index} label={event.title} value={event.title} />
           ))}
         </Picker>
       </View>

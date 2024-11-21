@@ -39,7 +39,7 @@ function TabNavigator() {
         tabBarInactiveTintColor: "gray",
       })}
     >
-      <Tab.Screen name="Home" component={FeedbackAndReview} />
+      <Tab.Screen name="Home" component={HomeScreen} />
       <Tab.Screen name="Notifications" component={NotificationScreen} />
       <Tab.Screen name="Registration" component={RegistrationScreen} />
       <Tab.Screen name="AllEvents" component={AllEvents} />

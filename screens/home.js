@@ -148,7 +148,6 @@ const HomeScreen = ({ navigation }) => {
                 key={index}
                 onPress={() => {
                   navigation.navigate("EventDetails", { event });
-                  //print("Clicked")
                 }}
               >
                 <Card containerStyle={styles.largeCard}>
@@ -227,6 +226,9 @@ const HomeScreen = ({ navigation }) => {
                       />
                       <Text style={styles.locationText}>{event.location}</Text>
                     </View>
+                  </View>
+                  <View>
+                    <Image resizeMode="contain" source={require("../assets/feedback_icon.png")} style={styles.feedbackIcon}/>
                   </View>
                 </Card>
               </TouchableOpacity>
@@ -343,6 +345,11 @@ const styles = StyleSheet.create({
     color: "rgba(43, 40, 73, 0.5)",
     fontWeight: "900",
   },
+  feedbackIcon: {
+    marginLeft: 20,
+    height: 30,
+    width: 30,
+  }
 });
 
 export default HomeScreen;

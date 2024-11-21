@@ -78,6 +78,9 @@ function AllEvents() {
                   {formattedDate(event.start_date)}
                 </Text>
               </View>
+              <View>
+                  <Image resizeMode="center" source={require("../assets/review_icon.png")}/>
+                </View>
               <Text style={styles.eventTitle}>{event.title}</Text>
               <View style={styles.locationContainer}>
                 <Image
@@ -88,7 +91,12 @@ function AllEvents() {
                 <Text style={styles.locationText}>{event.location}</Text>
               </View>
               <View style={styles.buttonContainer}>
-                <TouchableOpacity style={styles.viewButton}>
+                <TouchableOpacity
+                  style={styles.viewButton}
+                  onPress={() => {
+                    navigation.navigate("EventDetails", { event });
+                  }}
+                >
                   <Text style={styles.viewButtonText}>View</Text>
                 </TouchableOpacity>
                 <TouchableOpacity
