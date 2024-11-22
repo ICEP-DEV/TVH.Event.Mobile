@@ -58,7 +58,7 @@ const NotificationScreen = () => {
         <Image
           source={
             displayBase64AsImage(eventImages[item.event_id]) ||
-            require("../assets/alx.jpg")
+            require("../assets/default_event.jpg")
           }
           style={styles.logo}
         />
