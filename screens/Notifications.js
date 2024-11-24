@@ -6,36 +6,37 @@ import api from "../APIs/API";
 
 const NotificationScreen = () => {
   const [allNotifications, setAllNotifications] = useState([]);
-  const [eventImages, setEventImages] = useState({});
+  const [eventDetails, setEventDetails] = useState({}); // Store both images and titles
   const [error, setError] = useState(null);
 
   // Fetch all notifications
   useEffect(() => {
     const getAllNotifications = async () => {
       try {
-        const response = await axios.get(
-          "http://10.100.99.15:3001/api/notifications/notifications"
-        );
+        const response = await axios.get(api + "/notifications/notifications");
         setAllNotifications(response.data);
 
-        // Fetch event images for each notification
-        const images = {};
+        // Fetch event details for each notification
+        const details = {};
         for (const notification of response.data) {
           const eventId = notification.event_id;
           if (eventId) {
             try {
-              const eventResponse = await axios.get(`${api}/event/${eventId}`);
-              const eventData = eventResponse.data.results[0]; // Adjusted for the correct API response format
-              images[eventId] = eventData.image; // Store the base64 image
+              const eventResponse = await axios.get(api + "/event/" + eventId);
+              const eventData = eventResponse.data.results[0];
+              details[eventId] = {
+                image: eventData.image,
+                title: eventData.title,
+              };
             } catch (eventError) {
               console.error(
-                `Failed to load event image for event ID ${eventId}`,
+                `Failed to load event details for event ID ${eventId}`,
                 eventError
               );
             }
           }
         }
-        setEventImages(images);
+        setEventDetails(details);
       } catch (error) {
         console.error(error);
         setError("Failed to load notifications. Please try again later.");
@@ -52,25 +53,31 @@ const NotificationScreen = () => {
   };
 
   // Render each notification card
-  const renderNotification = ({ item }) => (
-    <Card containerStyle={styles.card}>
-      <View style={styles.notificationContainer}>
-        <Image
-          source={
-            displayBase64AsImage(eventImages[item.event_id]) ||
-            require("../assets/default_event.jpg")
-          }
-          style={styles.logo}
-        />
-        <View style={styles.textContainer}>
-          <Text style={styles.messageText}>{item.message}</Text>
-          <Text style={styles.eventText}>
-            Event: {eventImages[item.event_id] ? "Loaded" : "Not Available"}
-          </Text>
+  const renderNotification = ({ item }) => {
+    const eventId = item.event_id;
+    const event = eventDetails[eventId] || {}; // Get the event details (image and title)
+
+    return (
+      <Card containerStyle={styles.card}>
+        <View style={styles.notificationContainer}>
+          <Image
+            source={
+              displayBase64AsImage(event.image) ||
+              require("../assets/default_event.jpg")
+            }
+            style={styles.logo}
+          />
+          <View style={styles.textContainer}>
+            <Text style={styles.eventTitleText}>
+              {event.title || "Event Title Not Available"}
+            </Text>
+            <Text style={styles.messageText}>{item.message}</Text>
+            <Text style={styles.eventText}>Timestamp</Text>
+          </View>
         </View>
-      </View>
-    </Card>
-  );
+      </Card>
+    );
+  };
 
   return (
     <View style={styles.container}>
@@ -113,13 +120,19 @@ const styles = StyleSheet.create({
   textContainer: {
     flex: 1,
   },
+  eventTitleText: {
+    fontSize: 16,
+    fontWeight: "bold",
+    color: "#222",
+    marginBottom: 5,
+  },
   messageText: {
     fontSize: 14,
-    color: "#333",
+    color: "#222",
   },
   eventText: {
     fontSize: 12,
-    color: "#555",
+    color: "#999",
   },
   card: {
     borderRadius: 15,
