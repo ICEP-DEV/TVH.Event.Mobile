@@ -26,11 +26,11 @@ function TabNavigator() {
           let iconName;
           if (route.name === "Home") {
             iconName = focused ? "home" : "home-outline";
-          } else if (route.name === "AllEvents") {
+          } else if (route.name === "Events") {
             iconName = focused ? "calendar" : "calendar-outline";
           } else if (route.name === "Notifications") {
             iconName = focused ? "notifications" : "notifications-outline";
-          } else if (route.name === "Registration") {
+          } else if (route.name === "Profile") {
             iconName = focused ? "person" : "person-outline";
           }
           return <Icon name={iconName} type="ionicon" color={color} size={size} />;
@@ -41,8 +41,8 @@ function TabNavigator() {
     >
       <Tab.Screen name="Home" component={HomeScreen} />
       <Tab.Screen name="Notifications" component={NotificationScreen} />
-      <Tab.Screen name="Registration" component={RegistrationScreen} />
-      <Tab.Screen name="AllEvents" component={AllEvents} />
+      <Tab.Screen name="Profile" component={RegistrationScreen} />
+      <Tab.Screen name="Events" component={AllEvents} />
     </Tab.Navigator>
   );
 }
