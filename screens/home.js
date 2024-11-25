@@ -203,7 +203,7 @@ const HomeScreen = ({ navigation }) => {
               <TouchableOpacity
                 key={index}
                 onPress={() => {
-                  navigation.navigate("EventDetails", { event });
+                  navigation.navigate("FeedbackAndReview", { event });
                 }}
               >
                 <Card containerStyle={styles.largeCard}>
@@ -240,6 +240,7 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     backgroundColor: "#F8F8F8",
+    padding: 0,
   },
   searchContainer: {
     padding: 10,
