@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from "react";
 import {
+  Dimensions,
   View,
   StyleSheet,
   Image,
@@ -11,6 +12,8 @@ import {
 import api from "../APIs/API";
 import axios from "axios";
 import { useNavigation } from "@react-navigation/native";
+
+const { height, width } = Dimensions.get("window");
 
 // Main Component: AllEvents
 function AllEvents() {
@@ -70,7 +73,7 @@ function AllEvents() {
           {allevents.map((event) => (
             <View key={event.event_id} style={styles.eventCardContainer}>
               <Image
-                source={displayBlobAsImage(event.image)}
+                source={event.image ? displayBlobAsImage(event.image) : require("../assets/default_event.jpg")}
                 style={styles.eventImage}
               />
               <View style={styles.dateContainer}>
@@ -115,12 +118,16 @@ function AllEvents() {
 }
 
 const styles = StyleSheet.create({
-  container: { flex: 1, padding: 13 },
+  container: { 
+    flex: 1,
+    padding: 13, 
+  },
   statusBarContainer: {
     flexDirection: "row",
     justifyContent: "space-between",
     width: "100%",
     maxWidth: 326,
+    paddingTop: "100%"
   },
   timeText: {
     color: "rgba(25, 25, 26, 1)",

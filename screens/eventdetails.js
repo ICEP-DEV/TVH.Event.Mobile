@@ -109,7 +109,7 @@ const styles = StyleSheet.create({
     flexGrow: 1,
     backgroundColor: "#F8F8F8",
     paddingHorizontal: 15,
-    paddingVertical: 20,
+    paddingVertical: 50,
   },
   navBar: {
     backgroundColor: "#32CD32",

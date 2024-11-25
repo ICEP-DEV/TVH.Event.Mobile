@@ -266,26 +266,9 @@ const FeedbackAndReview = ({ route, navigation }) => {
       {/* Header */}
       <View style={styles.header}>
         <Text style={styles.headerText}>Feedback & Reviews</Text>
+        <Text style={styles.eventTitle}>{selectedEvent}</Text>
         {/* Dropdown for Event Title */}
-        <Picker
-          selectedValue={selectedEvent}
-          style={styles.eventTitle}
-          onValueChange={(itemValue) => setSelectedEvent(itemValue)}
-        >
-          {eventData
-            .filter((event) => {
-              const eventDate = new Date(event.end_date || event.start_date);
-              return eventDate <= currentDate && eventDate >= fifteenDaysAgo;
-            })
-            .slice(0, 10)
-            .map((event, index) => (
-              <Picker.Item
-                key={index}
-                label={event.title}
-                value={event.title}
-              />
-            ))}
-        </Picker>
+        
       </View>
 
       {/* Rating Summary */}
@@ -409,7 +392,8 @@ const styles = StyleSheet.create({
     marginBottom: 8,
   },
   eventTitle: {
-    fontSize: 18,
+    fontSize: 40,
+    paddingLeft: 10,
     color: "#4CAF50",
     textDecorationLine: "underline",
   },

@@ -28,6 +28,19 @@ const deleteAttendee = async () =>{
     }
 }
 
+const endSession = async (navigation) => {
+    try {
+      // Clear all session-related data
+      await AsyncStorage.clear();
+      console.log("Session ended. User data cleared.");
+      
+      // Navigate to the Login or Welcome screen
+      navigation.replace("HomeScreen"); // or navigation.navigate("Login")
+    } catch (error) {
+      console.error("Error ending session:", error);
+    }
+  };
+
 export {
-    getAttendee,storeAttendee, deleteAttendee
+    getAttendee,storeAttendee, deleteAttendee, endSession
 }
