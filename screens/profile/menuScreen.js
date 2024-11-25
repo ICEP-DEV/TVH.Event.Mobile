@@ -22,11 +22,11 @@ const ProfileScreen = ({ navigation }) => {
       title: "Surveys",
       onPress: () => console.log("Surveys Pressed"),
     },
-    // {
-    //   id: 3,
-    //   title: "Feedback & Reviews",
-    //   onPress: () => navigation.navigate("FeedbackAndReview"),
-    // },
+    {
+      id: 3,
+      title: "Logout",
+      onPress: () => navigation.navigate("HomeScreen"),
+    },
   ];
 
   return (

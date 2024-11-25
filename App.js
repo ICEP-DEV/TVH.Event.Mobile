@@ -63,6 +63,7 @@ export default function App(){
         initialRouteName="HomePage"
       >
         <Stack.Screen name="HomePage" component={TabNavigator} />
+        <Stack.Screen name="HomeScreen" component={HomeScreen}/>
         <Stack.Screen name="EventDetails" component={EventDetails} />
         <Stack.Screen name="Login" component={LoginScreen} />
         <Stack.Screen name="Signup" component={SignupScreen} />
