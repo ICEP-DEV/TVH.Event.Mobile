@@ -17,6 +17,7 @@ import { Picker } from "@react-native-picker/picker";
 import api from "../../APIs/API";
 import axios from "axios";
 import { subDays, isAfter, isSameDay, parseISO } from "date-fns";
+import AsyncStorage from '@react-native-async-storage/async-storage';
 
 const FeedbackAndReview = ({ route, navigation }) => {
   const { event } = route.params;
@@ -28,7 +29,11 @@ const FeedbackAndReview = ({ route, navigation }) => {
   const [reviewText, setReviewText] = useState("");
   const [reviewRating, setReviewRating] = useState(0);
 
+  const [ registrationID, setRegistrationID ] = useState(0)
+  const [attendee, setAttendee] = useState(null);
+
   useEffect(() => {
+    
     const getAllEvents = async () => {
       try {
         const events = await axios.get(api + "/event/all");
@@ -40,15 +45,51 @@ const FeedbackAndReview = ({ route, navigation }) => {
       }
     };
 
+    const x = async ()=>{
+      const atte = await AsyncStorage.getItem('attendee_id')
+      setAttendee(atte)
+      await axios.get(
+        api + '/register/get/attendee/' + 30
+      ).then((response) => {
+        console.log("Here 1 " + response.data["results"]["registration_id"])
+      }).catch((error) =>{
+        console.log("error here " + error)
+      })
+      
+    }
+    x()
     getAllEvents();
   }, []);
 
-  const submitReview = () => {
+  const openModal = async() =>{
+
+    if(attendee !== null){
+      setModalVisible(true)
+    }else{
+      console.log(attendee)
+      console.log("go back and register")
+    }
+  }
+
+  const submitReview = async() => {
     // Placeholder for submitting the review
+    /*
+    const data = {
+      "registration_id" : 0,
+      "rating" : reviewRating,
+      "content" : reviewText
+    }
     console.log("Review Submitted:", reviewRating, reviewText);
+    await axios.post(
+      api + '/reviews/create',
+      data
+    )
     setModalVisible(false); // Close the modal
     setReviewText(""); // Reset input
     setReviewRating(0); // Reset rating
+    */
+    
+    
   };
 
   useEffect(() => {
@@ -60,7 +101,7 @@ const FeedbackAndReview = ({ route, navigation }) => {
         console.log(error);
       }
     };
-    getAllReviews();
+    //getAllReviews();
   }, []);
 
   useEffect(() => {
@@ -300,7 +341,7 @@ const FeedbackAndReview = ({ route, navigation }) => {
       {/* Write Review Button */}
       <TouchableOpacity
         style={styles.writeReviewButton}
-        onPress={() => setModalVisible(true)} // Open modal
+        onPress={() => openModal()} // Open modal
       >
         <Text style={styles.writeReviewText}>Write a review</Text>
       </TouchableOpacity>
