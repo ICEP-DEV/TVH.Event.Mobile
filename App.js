@@ -12,6 +12,8 @@ import AllEvents from "./screens/allEvents.js";
 import EventDetails from "./screens/eventdetails.js";
 import RegistrationForm from './screens/registrationform.js';
 import FeedbackAndReview from "./screens/feedback_and_review/feedback.js";
+import ProfileScreen from "./screens/profile/menuScreen.js";
+import EditProfileScreen from "./screens/profile/editProfile.js";
 
 
 const Stack = createStackNavigator();
@@ -33,7 +35,9 @@ function TabNavigator() {
           } else if (route.name === "Profile") {
             iconName = focused ? "person" : "person-outline";
           }
-          return <Icon name={iconName} type="ionicon" color={color} size={size} />;
+          return (
+            <Icon name={iconName} type="ionicon" color={color} size={size} />
+          );
         },
         tabBarActiveTintColor: "#007AFF",
         tabBarInactiveTintColor: "gray",
@@ -41,8 +45,8 @@ function TabNavigator() {
     >
       <Tab.Screen name="Home" component={HomeScreen} />
       <Tab.Screen name="Notifications" component={NotificationScreen} />
-      <Tab.Screen name="Profile" component={RegistrationScreen} />
       <Tab.Screen name="Events" component={AllEvents} />
+      <Tab.Screen name="Profile" component={ProfileScreen} />
     </Tab.Navigator>
   );
 }
@@ -53,12 +57,27 @@ export default function App(){
 
   return (
     <NavigationContainer>
-      <Stack.Navigator screenOptions={{ headerShown: false }} initialRouteName="HomePage">
+      <Stack.Navigator
+        screenOptions={{ headerShown: false }}
+        initialRouteName="HomePage"
+      >
         <Stack.Screen name="HomePage" component={TabNavigator} />
         <Stack.Screen name="EventDetails" component={EventDetails} />
         <Stack.Screen name="Login" component={LoginScreen} />
         <Stack.Screen name="Signup" component={SignupScreen} />
-        <Stack.Screen name="RegisterForm" component={RegistrationForm}/>
+        <Stack.Screen name="AllEvents" component={AllEvents} />
+        <Stack.Screen name="RegisterForm" component={RegistrationForm} />
+        <Stack.Screen name="FeedbackAndReview" component={FeedbackAndReview} />
+        <Stack.Screen
+          name="ProfileScreen"
+          component={ProfileScreen}
+          options={{ headerShown: true, title: "Profile" }}
+        />
+        <Stack.Screen
+          name="EditProfileScreen"
+          component={EditProfileScreen}
+          options={{ headerShown: true, title: "Edit Profile" }}
+        />
       </Stack.Navigator>
     </NavigationContainer>
   );

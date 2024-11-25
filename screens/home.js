@@ -20,7 +20,7 @@ const HomeScreen = ({ navigation }) => {
   const [error, setError] = useState(null);
 
   const currentDate = new Date();
-  const fifteenDaysAgo = subDays(currentDate, 16);
+  const fifteenDaysAgo = subDays(currentDate, 30);
 
   const fromCurrent = (event) => {
     const eventDate = parseISO(event.start_date);
@@ -114,7 +114,7 @@ const HomeScreen = ({ navigation }) => {
           </Card>
           <Card containerStyle={styles.card}>
             <Image
-              source={require("../assets/sem.jpg")}
+              source={require("../assets/web.jpg")}
               style={styles.eventImage}
             />
             <Text style={styles.cardTitle}>Webinars</Text>
@@ -198,7 +198,7 @@ const HomeScreen = ({ navigation }) => {
               const eventDate = new Date(event.end_date || event.start_date);
               return eventDate <= currentDate && eventDate >= fifteenDaysAgo;
             })
-            .slice(0, 6)
+            .slice(0, 10)
             .map((event, index) => (
               <TouchableOpacity
                 key={index}
@@ -227,15 +227,12 @@ const HomeScreen = ({ navigation }) => {
                       <Text style={styles.locationText}>{event.location}</Text>
                     </View>
                   </View>
-                  <View>
-                    <Image resizeMode="contain" source={require("../assets/feedback_icon.png")} style={styles.feedbackIcon}/>
-                  </View>
                 </Card>
               </TouchableOpacity>
             ))}
         </ScrollView>
       </View>
-</ScrollView>
+    </ScrollView>
   );
 };
 
@@ -349,7 +346,7 @@ const styles = StyleSheet.create({
     marginLeft: 20,
     height: 30,
     width: 30,
-  }
+  },
 });
 
 export default HomeScreen;
