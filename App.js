@@ -14,6 +14,7 @@ import RegistrationForm from './screens/registrationform.js';
 import FeedbackAndReview from "./screens/feedback_and_review/feedback.js";
 import ProfileScreen from "./screens/profile/menuScreen.js";
 import EditProfileScreen from "./screens/profile/editProfile.js";
+import RegisteredEventsScreen from "./screens/profile/registeredEvents.js";
 
 
 const Stack = createStackNavigator();
@@ -68,10 +69,11 @@ export default function App(){
         <Stack.Screen name="AllEvents" component={AllEvents} />
         <Stack.Screen name="RegisterForm" component={RegistrationForm} />
         <Stack.Screen name="FeedbackAndReview" component={FeedbackAndReview} />
+        <Stack.Screen name="RegisteredEventsScreen" component={RegisteredEventsScreen} />
         <Stack.Screen
           name="ProfileScreen"
           component={ProfileScreen}
-          options={{ headerShown: true, title: "Profile" }}
+          options={{ headerShown: false, title: "Profile" }}
         />
         <Stack.Screen
           name="EditProfileScreen"

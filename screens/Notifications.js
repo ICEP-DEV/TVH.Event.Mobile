@@ -79,6 +79,8 @@ const NotificationScreen = () => {
     );
   };
 
+  
+
   return (
     <View style={styles.container}>
       {error ? (

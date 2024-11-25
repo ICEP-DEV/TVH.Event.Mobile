@@ -15,7 +15,7 @@ const ProfileScreen = ({ navigation }) => {
     {
       id: 1,
       title: "Registered Events",
-      onPress: () => console.log("Registered Events Pressed"),
+      onPress: () => navigation.navigate("RegisteredEventsScreen"),
     },
     {
       id: 2,
