@@ -13,12 +13,14 @@ import { Card, Button, Rating } from "react-native-elements";
 import { ScrollView } from "react-native-gesture-handler";
 import { ProgressBar } from "react-native-paper";
 import { Buffer } from "buffer";
-import { Picker } from '@react-native-picker/picker';
+import { Picker } from "@react-native-picker/picker";
 import api from "../../APIs/API";
 import axios from "axios";
 import { subDays, isAfter, isSameDay, parseISO } from "date-fns";
 
-const FeedbackAndReview = ({ navigation }) => {
+const FeedbackAndReview = ({ route, navigation }) => {
+  const { event } = route.params;
+
   const [allReviews, setAllReviews] = useState([]);
   const [filteredData, setFilteredData] = useState([]);
   const [eventData, setEventData] = useState([]);
@@ -213,8 +215,11 @@ const FeedbackAndReview = ({ navigation }) => {
   const message = (data) => {
     return Buffer.from(data).toString("utf-8");
   };
-  const [selectedEvent, setSelectedEvent] = useState("GKHack '24");
+  const [selectedEvent, setSelectedEvent] = useState(event.title.toString());
   const events = ["GKHack '24", "CodeFest '23", "TechExpo '22"];
+
+  const currentDate = new Date();
+  const fifteenDaysAgo = subDays(currentDate, 30);
   return (
     <View style={styles.container}>
       {/* Header */}
@@ -228,14 +233,17 @@ const FeedbackAndReview = ({ navigation }) => {
         >
           {eventData
             .filter((event) => {
-              const eventDate = parseISO(event.start_date);
-              const today = new Date();
-              return isAfter(eventDate, today) || isSameDay(eventDate, today);
+              const eventDate = new Date(event.end_date || event.start_date);
+              return eventDate <= currentDate && eventDate >= fifteenDaysAgo;
             })
-            .slice(0, 6)
+            .slice(0, 10)
             .map((event, index) => (
-            <Picker.Item key={index} label={event.title} value={event.title} />
-          ))}
+              <Picker.Item
+                key={index}
+                label={event.title}
+                value={event.title}
+              />
+            ))}
         </Picker>
       </View>
 
@@ -347,11 +355,12 @@ const styles = StyleSheet.create({
     flex: 1,
     backgroundColor: "#FFFFFF",
     paddingHorizontal: 20,
-    paddingTop: 70
+    paddingTop: 70,
+    paddingBottom: 20
   },
   header: {
     marginBottom: 20,
-    width: 200  
+    width: 200,
   },
   headerText: {
     fontSize: 20,
