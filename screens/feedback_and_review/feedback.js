@@ -72,6 +72,7 @@ const FeedbackAndReview = ({ route, navigation }) => {
   const [submitSuccess, setSubmitSuccess] = useState(false);
 
   useEffect(() => {
+    
     const getAllEvents = async () => {
       try {
         const events = await axios.get(api + "/event/all");
@@ -83,6 +84,19 @@ const FeedbackAndReview = ({ route, navigation }) => {
       }
     };
 
+    const x = async ()=>{
+      const atte = await AsyncStorage.getItem('attendee_id')
+      setAttendee(atte)
+      await axios.get(
+        api + '/register/get/attendee/' + 30
+      ).then((response) => {
+        console.log("Here 1 " + response.data["results"]["registration_id"])
+      }).catch((error) =>{
+        console.log("error here " + error)
+      })
+      
+    }
+    x()
     getAllEvents();
   }, []);
 
@@ -116,7 +130,7 @@ const FeedbackAndReview = ({ route, navigation }) => {
         console.log(error);
       }
     };
-    getAllReviews();
+    //getAllReviews();
   }, []);
 
   // Placeholder data for reviews
