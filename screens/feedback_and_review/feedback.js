@@ -7,7 +7,6 @@ import {
   Modal,
   TextInput,
   Image,
-  Dimensions,
   TouchableOpacity,
 } from "react-native";
 import { Card, Button, Rating } from "react-native-elements";
@@ -20,8 +19,6 @@ import api from "../../APIs/API";
 import axios from "axios";
 import { subDays, isAfter, isSameDay, parseISO } from "date-fns";
 import { useRoute, useNavigation } from "@react-navigation/native";
-
-const { height, width } = Dimensions.get("window");
 
 // Review Feedback Modal Component
 const ReviewFeedbackModal = ({ visible, onClose, success, message }) => {
@@ -72,7 +69,6 @@ const FeedbackAndReview = ({ route, navigation }) => {
   const [submitSuccess, setSubmitSuccess] = useState(false);
 
   useEffect(() => {
-    
     const getAllEvents = async () => {
       try {
         const events = await axios.get(api + "/event/all");
@@ -84,19 +80,6 @@ const FeedbackAndReview = ({ route, navigation }) => {
       }
     };
 
-    const x = async ()=>{
-      const atte = await AsyncStorage.getItem('attendee_id')
-      setAttendee(atte)
-      await axios.get(
-        api + '/register/get/attendee/' + 30
-      ).then((response) => {
-        console.log("Here 1 " + response.data["results"]["registration_id"])
-      }).catch((error) =>{
-        console.log("error here " + error)
-      })
-      
-    }
-    x()
     getAllEvents();
   }, []);
 
@@ -130,7 +113,7 @@ const FeedbackAndReview = ({ route, navigation }) => {
         console.log(error);
       }
     };
-    //getAllReviews();
+    getAllReviews();
   }, []);
 
   // Placeholder data for reviews
@@ -146,12 +129,8 @@ const FeedbackAndReview = ({ route, navigation }) => {
     },
     // ... rest of your reviews array ...
   ];
+  const ratings = allReviews.map(review => review.rating);
 
-  const formatDate = (isoDateString) => {
-    const date = new Date(isoDateString);
-    const options = { year: 'numeric', month: 'long', day: 'numeric' };
-    return date.toLocaleDateString('en-US', options);
-  };
 
   const calculateRatingsSummary = (reviews) => {
     const summary = [5, 4, 3, 2, 1].map((stars) => ({
@@ -162,7 +141,7 @@ const FeedbackAndReview = ({ route, navigation }) => {
   };
 
   const ratingsSummary = calculateRatingsSummary(allReviews);
-  const totalRatings = allReviews.length;
+  const totalRatings = reviews.length;
   
 
   const calculateAverageRating = (reviews) => {
@@ -215,8 +194,8 @@ const FeedbackAndReview = ({ route, navigation }) => {
       <View style={styles.reviewsContainer}>
         <Text style={styles.reviewsCount}>{allReviews.length} reviews</Text>
         <ScrollView>
-          {allReviews.map((item, index) => (
-            <Card key={index} containerStyle={styles.reviewCard}>
+          {allReviews.map((item) => (
+            <Card key={item.id} containerStyle={styles.reviewCard}>
               <View style={styles.reviewHeader}>
                 <View style={styles.reviewInfo}>
                   <Text style={styles.reviewerName}>{item.first_name} {item.last_name}</Text>
@@ -227,7 +206,7 @@ const FeedbackAndReview = ({ route, navigation }) => {
                     style={styles.smallRating}
                   />
                 </View>
-                <Text style={styles.reviewDate}>{formatDate(item.submitted)}</Text>
+                <Text style={styles.reviewDate}>{item.submitted}</Text>
               </View>
               <Text style={styles.reviewText}>{item.content}</Text>
             </Card>
@@ -363,7 +342,6 @@ const styles = StyleSheet.create({
   },
   ratingSummary: {
     marginBottom: 20,
-    width: width * 0.5,
   },
   averageRating: {
     fontSize: 48,
@@ -500,4 +478,4 @@ const styles = StyleSheet.create({
   },
 });
 
-export default FeedbackAndReview;
+export default FeedbackAndReview; 
