@@ -14,47 +14,9 @@ import { ScrollView } from "react-native-gesture-handler";
 import { ProgressBar } from "react-native-paper";
 import { Buffer } from "buffer";
 import { Picker } from "@react-native-picker/picker";
-import { Check, X, AlertCircle } from 'lucide-react';
 import api from "../../APIs/API";
 import axios from "axios";
 import { subDays, isAfter, isSameDay, parseISO } from "date-fns";
-import { useRoute, useNavigation } from "@react-navigation/native";
-
-// Review Feedback Modal Component
-const ReviewFeedbackModal = ({ visible, onClose, success, message }) => {
-  return (
-    <Modal
-      animationType="fade"
-      transparent={true}
-      visible={visible}
-      onRequestClose={onClose}
-    >
-      <View style={styles.feedbackModalOverlay}>
-        <View style={styles.feedbackModalContent}>
-          <TouchableOpacity style={styles.closeButton} onPress={onClose}>
-            <X size={24} color="#9E9E9E" />
-          </TouchableOpacity>
-          
-          <View style={styles.iconContainer}>
-            {success ? (
-              <View style={[styles.iconCircle, styles.successCircle]}>
-                <Check size={32} color="#fff" />
-              </View>
-            ) : (
-              <View style={[styles.iconCircle, styles.errorCircle]}>
-                <AlertCircle size={32} color="#fff" />
-              </View>
-            )}
-          </View>
-          
-          <Text style={styles.feedbackMessage}>
-            {message || (success ? 'Review sent successfully' : 'Failed to send review')}
-          </Text>
-        </View>
-      </View>
-    </Modal>
-  );
-};
 
 const FeedbackAndReview = ({ route, navigation }) => {
   const { event } = route.params;
@@ -65,15 +27,13 @@ const FeedbackAndReview = ({ route, navigation }) => {
   const [modalVisible, setModalVisible] = useState(false);
   const [reviewText, setReviewText] = useState("");
   const [reviewRating, setReviewRating] = useState(0);
-  const [feedbackModalVisible, setFeedbackModalVisible] = useState(false);
-  const [submitSuccess, setSubmitSuccess] = useState(false);
 
   useEffect(() => {
     const getAllEvents = async () => {
       try {
         const events = await axios.get(api + "/event/all");
         setEventData(events.data.results);
-        setFilteredData(events.data.results);
+        setFilteredData(events.data.results); // Set initial filtered data
       } catch (error) {
         console.log(error);
         setError("Failed to load events. Please try again later.");
@@ -83,37 +43,41 @@ const FeedbackAndReview = ({ route, navigation }) => {
     getAllEvents();
   }, []);
 
-  const submitReview = async () => {
-    try {
-      // Your API call here
-      await axios.post(api + "/feedback/submit", {
-        rating: reviewRating,
-        text: reviewText,
-      });
-      
-      setModalVisible(false); // Close review modal
-      setSubmitSuccess(true);
-      setFeedbackModalVisible(true);
-      setReviewText("");
-      setReviewRating(0);
-      
-    } catch (error) {
-      console.log(error);
-      setSubmitSuccess(false);
-      setFeedbackModalVisible(true);
-    }
+  const submitReview = () => {
+    // Placeholder for submitting the review
+    console.log("Review Submitted:", reviewRating, reviewText);
+    setModalVisible(false); // Close the modal
+    setReviewText(""); // Reset input
+    setReviewRating(0); // Reset rating
   };
 
   useEffect(() => {
     const getAllReviews = async () => {
       try {
-        const response = await axios.get(api + "/reviews/event/" + event.event_id);
+        const response = await axios.get(
+          api + "/reviews/event/" + event.event_id
+        );
         setAllReviews(response.data.results);
       } catch (error) {
         console.log(error);
       }
     };
     getAllReviews();
+  }, []);
+
+  useEffect(() => {
+    const getAllEvents = async () => {
+      try {
+        const events = await axios.get(api + "/event/all");
+        setEventData(events.data.results);
+        setFilteredData(events.data.results); // Set initial filtered data
+      } catch (error) {
+        console.log(error);
+        setError("Failed to load events. Please try again later.");
+      }
+    };
+
+    getAllEvents();
   }, []);
 
   // Placeholder data for reviews
@@ -127,10 +91,106 @@ const FeedbackAndReview = ({ route, navigation }) => {
         "GKHack was well-organized with exciting challenges and helpful mentors. A fantastic event for learning and networking!",
       helpful: true,
     },
-    // ... rest of your reviews array ...
+    {
+      id: "2",
+      name: "Chun Lee",
+      date: "June 5, 2019",
+      rating: 4,
+      feedback:
+        "GKHack was well-organized with exciting challenges and helpful mentors. A fantastic event for learning and networking!",
+      helpful: false,
+    },
+    {
+      id: "3",
+      name: "Amina Yusuf",
+      date: "June 6, 2019",
+      rating: 5,
+      feedback:
+        "I loved the energy and the opportunities to meet industry leaders. This was a great experience!",
+      helpful: true,
+    },
+    {
+      id: "4",
+      name: "John Doe",
+      date: "June 7, 2019",
+      rating: 3,
+      feedback:
+        "The event was good, but I think the venue could have been better organized. Some sessions were hard to follow.",
+      helpful: false,
+    },
+    {
+      id: "5",
+      name: "Emily Carter",
+      date: "June 8, 2019",
+      rating: 4,
+      feedback:
+        "Great event with an amazing lineup of speakers. I learned so much about innovation and teamwork.",
+      helpful: true,
+    },
+    {
+      id: "6",
+      name: "Rajesh Kumar",
+      date: "June 9, 2019",
+      rating: 5,
+      feedback:
+        "This hackathon exceeded my expectations! The challenges were engaging, and the mentors were super helpful.",
+      helpful: true,
+    },
+    {
+      id: "7",
+      name: "Fatima Ahmed",
+      date: "June 10, 2019",
+      rating: 2,
+      feedback:
+        "While the event had potential, I felt it lacked clear communication and better time management.",
+      helpful: false,
+    },
+    {
+      id: "8",
+      name: "Liam O'Connor",
+      date: "June 11, 2019",
+      rating: 4,
+      feedback:
+        "Overall, an awesome event. The coding challenges were well-designed, but more snacks would have been nice!",
+      helpful: true,
+    },
+    {
+      id: "9",
+      name: "Sophia Martinez",
+      date: "June 12, 2019",
+      rating: 5,
+      feedback:
+        "Amazing experience! I appreciated the diversity of ideas and the collaborative spirit throughout the event.",
+      helpful: true,
+    },
+    {
+      id: "10",
+      name: "David Chen",
+      date: "June 13, 2019",
+      rating: 1,
+      feedback:
+        "The event was decent, but I think the workshops could have been more interactive. Still, I learned a lot.",
+      helpful: false,
+    },
+    {
+      id: "11",
+      name: "Grace Kim",
+      date: "June 14, 2019",
+      rating: 4,
+      feedback:
+        "Well-executed event! I enjoyed the networking sessions and appreciated the attention to detail.",
+      helpful: true,
+    },
+    {
+      id: "12",
+      name: "Michael Brown",
+      date: "June 15, 2019",
+      rating: 5,
+      feedback:
+        "One of the best hackathons I have attended! The team coordination activities were incredible.",
+      helpful: true,
+    },
   ];
-  const ratings = allReviews.map(review => review.rating);
-
 
   const calculateRatingsSummary = (reviews) => {
     const summary = [5, 4, 3, 2, 1].map((stars) => ({
@@ -141,28 +201,37 @@ const FeedbackAndReview = ({ route, navigation }) => {
   };
 
   const ratingsSummary = calculateRatingsSummary(allReviews);
+
   const totalRatings = reviews.length;
-  
+
+  const formatDate = (isoDateString) => {
+    const date = new Date(isoDateString);
+    const options = { year: "numeric", month: "long", day: "numeric" };
+    return date.toLocaleDateString("en-US", options);
+  };
 
   const calculateAverageRating = (reviews) => {
     if (reviews.length === 0) return 0;
     const totalScore = reviews.reduce((sum, review) => sum + review.rating, 0);
-    return (totalScore / reviews.length).toFixed(1);
+    return (totalScore / reviews.length).toFixed(1); // Rounded to 1 decimal place
   };
+
   const averageRating = calculateAverageRating(allReviews);
-  const [selectedEvent, setSelectedEvent] = useState(event.title.toString());
-  const [eventId, setEventId] = useState(event.event_id)
+
+  //const responseString = Buffer.from(feedback.responses.data).toString("utf-8");
+
+  const message = (data) => {
+    return Buffer.from(data).toString("utf-8");
+  };
+  const [selectedEvent, setSelectedEvent] = useState("GKHack '24");
   const events = ["GKHack '24", "CodeFest '23", "TechExpo '22"];
-
-  const currentDate = new Date();
-  const fifteenDaysAgo = subDays(currentDate, 30);
-
   return (
     <View style={styles.container}>
       {/* Header */}
       <View style={styles.header}>
         <Text style={styles.headerText}>Feedback & Reviews</Text>
-        <Text style={styles.eventTitle}>{selectedEvent} + {eventId}</Text>
+        {/* Dropdown for Event Title */}
+        <Text style={styles.eventTitle}>{event.title}</Text>
       </View>
 
       {/* Rating Summary */}
@@ -191,14 +260,17 @@ const FeedbackAndReview = ({ route, navigation }) => {
       </View>
 
       {/* Reviews Section */}
+
       <View style={styles.reviewsContainer}>
         <Text style={styles.reviewsCount}>{allReviews.length} reviews</Text>
         <ScrollView>
-          {allReviews.map((item) => (
-            <Card key={item.id} containerStyle={styles.reviewCard}>
+          {allReviews.map((item, index) => (
+            <Card key={index} containerStyle={styles.reviewCard}>
               <View style={styles.reviewHeader}>
                 <View style={styles.reviewInfo}>
-                  <Text style={styles.reviewerName}>{item.first_name} {item.last_name}</Text>
+                  <Text style={styles.reviewerName}>
+                    {item.first_name} {item.last_name}
+                  </Text>
                   <Rating
                     imageSize={15}
                     readonly
@@ -206,7 +278,9 @@ const FeedbackAndReview = ({ route, navigation }) => {
                     style={styles.smallRating}
                   />
                 </View>
-                <Text style={styles.reviewDate}>{item.submitted}</Text>
+                <Text style={styles.reviewDate}>
+                  {formatDate(item.submitted)}
+                </Text>
               </View>
               <Text style={styles.reviewText}>{item.content}</Text>
             </Card>
@@ -217,7 +291,7 @@ const FeedbackAndReview = ({ route, navigation }) => {
       {/* Write Review Button */}
       <TouchableOpacity
         style={styles.writeReviewButton}
-        onPress={() => setModalVisible(true)}
+        onPress={() => setModalVisible(true)} // Open modal
       >
         <Text style={styles.writeReviewText}>Write a review</Text>
       </TouchableOpacity>
@@ -227,12 +301,13 @@ const FeedbackAndReview = ({ route, navigation }) => {
         animationType="slide"
         transparent={true}
         visible={modalVisible}
-        onRequestClose={() => setModalVisible(false)}
+        onRequestClose={() => setModalVisible(false)} // Close modal on back button
       >
         <View style={styles.modalOverlay}>
           <View style={styles.modalContainer}>
             <Text style={styles.modalTitle}>What is your review?</Text>
 
+            {/* Rating */}
             <Rating
               imageSize={30}
               startingValue={reviewRating}
@@ -240,6 +315,7 @@ const FeedbackAndReview = ({ route, navigation }) => {
               style={styles.ratingInput}
             />
 
+            {/* Review Input */}
             <Text style={styles.modalSubtitle}>
               Please share your opinion about the hackathon
             </Text>
@@ -251,6 +327,7 @@ const FeedbackAndReview = ({ route, navigation }) => {
               onChangeText={(text) => setReviewText(text)}
             />
 
+            {/* Submit Button */}
             <TouchableOpacity
               style={styles.submitButton}
               onPress={submitReview}
@@ -260,70 +337,16 @@ const FeedbackAndReview = ({ route, navigation }) => {
           </View>
         </View>
       </Modal>
-
-      {/* Feedback Modal */}
-      <ReviewFeedbackModal
-        visible={feedbackModalVisible}
-        success={submitSuccess}
-        onClose={() => setFeedbackModalVisible(false)}
-      />
     </View>
   );
 };
 
 const styles = StyleSheet.create({
-  // ... your existing styles ...
-  
-  // New styles for feedback modal
-  feedbackModalOverlay: {
-    flex: 1,
-    backgroundColor: 'rgba(0, 0, 0, 0.5)',
-    justifyContent: 'center',
-    alignItems: 'center',
-  },
-  feedbackModalContent: {
-    backgroundColor: '#fff',
-    borderRadius: 12,
-    padding: 24,
-    width: '80%',
-    maxWidth: 320,
-    alignItems: 'center',
-    position: 'relative',
-  },
-  closeButton: {
-    position: 'absolute',
-    right: 12,
-    top: 12,
-  },
-  iconContainer: {
-    marginVertical: 16,
-  },
-  iconCircle: {
-    width: 64,
-    height: 64,
-    borderRadius: 32,
-    justifyContent: 'center',
-    alignItems: 'center',
-  },
-  successCircle: {
-    backgroundColor: '#4CAF50',
-  },
-  errorCircle: {
-    backgroundColor: '#F44336',
-  },
-  feedbackMessage: {
-    fontSize: 16,
-    textAlign: 'center',
-    color: '#333',
-    marginTop: 8,
-  },
-  // ... rest of your existing styles ...
   container: {
     flex: 1,
     backgroundColor: "#FFFFFF",
-    paddingHorizontal: 20,
+    padding: 16,
     paddingTop: 70,
-    paddingBottom: 20
   },
   header: {
     marginBottom: 20,
@@ -336,7 +359,6 @@ const styles = StyleSheet.create({
   },
   eventTitle: {
     fontSize: 40,
-    paddingLeft: 10,
     color: "#4CAF50",
     textDecorationLine: "underline",
   },
@@ -396,6 +418,12 @@ const styles = StyleSheet.create({
     alignItems: "center",
     marginBottom: 8,
   },
+  avatar: {
+    width: 40,
+    height: 40,
+    borderRadius: 20,
+    marginRight: 10,
+  },
   reviewInfo: {
     flex: 1,
   },
@@ -414,6 +442,11 @@ const styles = StyleSheet.create({
     fontSize: 14,
     color: "#424242",
     marginBottom: 8,
+  },
+  helpfulText: {
+    fontSize: 12,
+    color: "#4CAF50",
+    fontWeight: "bold",
   },
   writeReviewButton: {
     backgroundColor: "#4CAF50",
@@ -478,4 +511,4 @@ const styles = StyleSheet.create({
   },
 });
 
-export default FeedbackAndReview; 
+export default FeedbackAndReview;
