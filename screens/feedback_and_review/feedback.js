@@ -27,6 +27,7 @@ const FeedbackAndReview = ({ route, navigation }) => {
   const [modalVisible, setModalVisible] = useState(false);
   const [reviewText, setReviewText] = useState("");
   const [reviewRating, setReviewRating] = useState(0);
+  const [totalRatings, setTotalRatings] = useState(1);
 
   useEffect(() => {
     const getAllEvents = async () => {
@@ -58,6 +59,8 @@ const FeedbackAndReview = ({ route, navigation }) => {
           api + "/reviews/event/" + event.event_id
         );
         setAllReviews(response.data.results);
+        if (response.data.results.length === 0) setTotalRatings(1);
+        else setTotalRatings(response.data.results.length);
       } catch (error) {
         console.log(error);
       }
@@ -201,8 +204,6 @@ const FeedbackAndReview = ({ route, navigation }) => {
   };
 
   const ratingsSummary = calculateRatingsSummary(allReviews);
-
-  const totalRatings = reviews.length;
 
   const formatDate = (isoDateString) => {
     const date = new Date(isoDateString);

@@ -47,7 +47,7 @@ const HomeScreen = ({ navigation }) => {
     setSearch(query);
     if (query) {
       const filtered = eventData.filter((event) =>
-        event.name.toLowerCase().includes(query.toLowerCase())
+        event.title.toLowerCase().includes(query.toLowerCase())
       );
       setFilteredData(filtered);
     } else {
