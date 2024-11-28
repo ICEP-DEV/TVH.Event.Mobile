@@ -109,6 +109,10 @@ const FeedbackAndReview = ({ route, navigation }) => {
 
   //const responseString = Buffer.from(feedback.responses.data).toString("utf-8");
 
+  const capitalizeFirstLetter = (val) => {
+    return String(val).charAt(0).toUpperCase() + String(val).slice(1);
+  };
+
   const message = (data) => {
     return Buffer.from(data).toString("utf-8");
   };
@@ -158,7 +162,8 @@ const FeedbackAndReview = ({ route, navigation }) => {
               <View style={styles.reviewHeader}>
                 <View style={styles.reviewInfo}>
                   <Text style={styles.reviewerName}>
-                    {item.first_name} {item.last_name}
+                    {capitalizeFirstLetter(item.first_name)}{" "}
+                    {capitalizeFirstLetter(item.last_name)}
                   </Text>
                   <Rating
                     imageSize={15}

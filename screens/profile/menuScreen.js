@@ -25,7 +25,7 @@ const ProfileScreen = ({ navigation }) => {
     {
       id: 3,
       title: "Logout",
-      onPress: () => navigation.navigate("HomeScreen"),
+      onPress: () => {navigation.goBack()},
     },
   ];
 
@@ -94,8 +94,10 @@ const styles = StyleSheet.create({
     alignItems: "center",
     backgroundColor: "#32CD32",
     paddingVertical: 30,
-    borderBottomLeftRadius: 20,
-    borderBottomRightRadius: 20,
+    borderBottomLeftRadius: 0,
+    borderBottomRightRadius: 0,
+    height: 90,
+    marginBottom: 90
   },
   profileImage: {
     width: 100,
@@ -110,6 +112,7 @@ const styles = StyleSheet.create({
     paddingVertical: 8,
     paddingHorizontal: 20,
     borderRadius: 20,
+    height: 35
   },
   editButtonText: {
     color: "#fff",
