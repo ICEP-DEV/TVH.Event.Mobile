@@ -12,7 +12,7 @@ import AllEvents from "./screens/allEvents.js";
 import EventDetails from "./screens/eventdetails.js";
 import RegistrationForm from './screens/registrationform.js';
 import FeedbackAndReview from "./screens/feedback_and_review/feedback.js";
-import ProfileScreen from "./screens/profile/menuScreen.js";
+import ProfileScreen from "./screens/profileScreen.js";
 import EditProfileScreen from "./screens/profile/editProfile.js";
 import RegisteredEventsScreen from "./screens/profile/registeredEvents.js";
 
@@ -47,7 +47,7 @@ function TabNavigator() {
       <Tab.Screen name="Home" component={HomeScreen} />
       <Tab.Screen name="Notifications" component={NotificationScreen} />
       <Tab.Screen name="Events" component={AllEvents} />
-      <Tab.Screen name="Profile" component={ProfileScreen} />
+      <Tab.Screen name="Profile" component={ProfileScreen} options={{ headerShown: false }} />
     </Tab.Navigator>
   );
 }
