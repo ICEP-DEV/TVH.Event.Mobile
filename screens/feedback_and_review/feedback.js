@@ -8,6 +8,7 @@ import {
   TextInput,
   Image,
   TouchableOpacity,
+  Dimensions
 } from "react-native";
 import { Card, Button, Rating } from "react-native-elements";
 import { ScrollView } from "react-native-gesture-handler";
@@ -17,6 +18,8 @@ import { Picker } from "@react-native-picker/picker";
 import api from "../../APIs/API";
 import axios from "axios";
 import { subDays, isAfter, isSameDay, parseISO } from "date-fns";
+
+const { height: h, width: w } = Dimensions.get("window");
 
 const FeedbackAndReview = ({ route, navigation }) => {
   const { event } = route.params;
@@ -258,6 +261,7 @@ const styles = StyleSheet.create({
   },
   ratingSummary: {
     marginBottom: 20,
+    
   },
   averageRating: {
     fontSize: 48,
@@ -286,7 +290,7 @@ const styles = StyleSheet.create({
     height: 6,
     borderRadius: 3,
     marginHorizontal: 8,
-    width: 330,
+    width: h * 0.349,
   },
   ratingCount: {
     width: 30,
