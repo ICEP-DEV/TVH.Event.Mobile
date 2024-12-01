@@ -88,7 +88,7 @@ const styles = StyleSheet.create({
     backgroundColor: '#000',
     display : 'flex',
     justifyContent : 'flex-end',
-    marginBottom : h * 0.05,
+    marginBottom : h * 0.03,
 
   },
   profileIconContainer: {
@@ -124,7 +124,7 @@ const styles = StyleSheet.create({
   logoutButton: {
     backgroundColor: '#007bff',
     paddingHorizontal: 10,
-    paddingVertical: 5,
+    paddingVertical: 10,
     borderRadius: 8,
   },
   logoutText: {
