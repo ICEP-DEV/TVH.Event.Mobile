@@ -9,6 +9,7 @@ import {
 } from 'react-native';
 import { useNavigation } from '@react-navigation/native';
 import { Icon } from 'react-native-elements';
+import { endSession } from "./utils/auth"; 
 
 const { height: h, width: w } = Dimensions.get('window');
 
@@ -54,7 +55,9 @@ const ProfileScreen = () => {
 
       <View style={styles.userInfo}>
         <Text style={styles.userName}>Hi, Yinhla Makamu</Text>
-        <TouchableOpacity style={styles.logoutButton}>
+        <TouchableOpacity style={styles.logoutButton} onPress={() => {
+          endSession(navigation);
+           navigation.goBack()}}>
           <Text style={styles.logoutText}>Log out</Text>
         </TouchableOpacity>
       </View>
@@ -81,76 +84,75 @@ const ProfileScreen = () => {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: '#fff',
+    backgroundColor: "#fff",
   },
   headerContainer: {
     height: h * 0.22,
-    backgroundColor: '#000',
-    display : 'flex',
-    justifyContent : 'flex-end',
-    marginBottom : h * 0.03,
-
+    backgroundColor: "rgba(88, 200, 66, 1)",
+    display: "flex",
+    justifyContent: "flex-end",
+    marginBottom: h * 0.03,
   },
   profileIconContainer: {
     height: h * 0.11,
     width: w * 0.24,
-    backgroundColor: '#fff',
+    backgroundColor: "#fff",
     borderRadius: 50,
-    justifyContent: 'center',
-    alignItems: 'center',
-    marginTop : h * 0.05,
-    position : 'absolute',
-    top : h * 0.11,
-    left : w * 0.05
+    justifyContent: "center",
+    alignItems: "center",
+    marginTop: h * 0.05,
+    position: "absolute",
+    top: h * 0.11,
+    left: w * 0.05,
     //bottom : 0
   },
   profileIcon: {
     borderWidth: 2,
-    borderColor: '#007bff',
+    borderColor: "#fff",
     borderRadius: 50,
     padding: 8,
   },
   userInfo: {
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-    alignItems: 'center',
+    flexDirection: "row",
+    justifyContent: "space-between",
+    alignItems: "center",
     paddingHorizontal: w * 0.05,
     marginVertical: h * 0.02,
   },
   userName: {
     fontSize: 18,
-    fontWeight: 'bold',
+    fontWeight: "bold",
   },
   logoutButton: {
-    backgroundColor: '#007bff',
+    backgroundColor: "#007bff",
     paddingHorizontal: 10,
     paddingVertical: 10,
     borderRadius: 8,
   },
   logoutText: {
-    color: '#fff',
+    color: "#fff",
     fontSize: 14,
   },
   section: {
     borderTopWidth: 1,
-    borderTopColor: '#ccc',
+    borderTopColor: "rgba(88, 200, 66, 1)",
     paddingHorizontal: w * 0.05,
     paddingVertical: h * 0.01,
   },
   sectionTitle: {
     fontSize: 20,
-    fontWeight: 'bold',
+    fontWeight: "bold",
     marginBottom: h * 0.01,
   },
   optionTile: {
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-    alignItems: 'center',
+    flexDirection: "row",
+    justifyContent: "space-between",
+    alignItems: "center",
     paddingVertical: h * 0.015,
   },
   optionTileContent: {
-    flexDirection: 'row',
-    alignItems: 'center',
+    flexDirection: "row",
+    alignItems: "center",
   },
   optionTitle: {
     marginLeft: 10,
