@@ -13,8 +13,9 @@ import EventDetails from "./screens/eventdetails.js";
 import RegistrationForm from './screens/registrationform.js';
 import FeedbackAndReview from "./screens/feedback_and_review/feedback.js";
 import ProfileScreen from "./screens/profileScreen.js";
-import EditProfileScreen from "./screens/profile/editProfile.js";
 import RegisteredEventsScreen from "./screens/profile/registeredEvents.js";
+import SurveyScreen from "./screens/surveyScreen.js";
+import EventFeedbackScreen from "./screens/eventFeedbackScreen.js";
 
 
 const Stack = createStackNavigator();
@@ -74,12 +75,17 @@ export default function App(){
         <Stack.Screen
           name="ProfileScreen"
           component={ProfileScreen}
-          options={{ headerShown: false, title: "Profile" }} 
+          options={{ headerShown: false }} 
         />
         <Stack.Screen
-          name="EditProfileScreen"
-          component={EditProfileScreen}
-          options={{ headerShown: true, title: "Edit Profile" }}
+          name="SurveyScreen"
+          component={SurveyScreen}
+          options={{ headerShown: false }} 
+        />
+        <Stack.Screen
+          name="EventFeedbackScreen"
+          component={EventFeedbackScreen}
+          options={{ headerShown: false }} 
         />
       </Stack.Navigator>
     </NavigationContainer>

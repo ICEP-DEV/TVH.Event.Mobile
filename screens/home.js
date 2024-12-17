@@ -203,7 +203,7 @@ const HomeScreen = ({ navigation }) => {
               <TouchableOpacity
                 key={index}
                 onPress={() => {
-                  navigation.navigate("FeedbackAndReview", { event });
+                  navigation.navigate("EventFeedbackScreen", { event });
                 }}
               >
                 <Card containerStyle={styles.largeCard}>

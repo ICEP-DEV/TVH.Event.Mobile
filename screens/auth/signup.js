@@ -1,11 +1,9 @@
-
-
-
 import React , {useState} from "react";
 import { ScrollView, Dimensions, View, Alert, StyleSheet, Text, TextInput, Pressable } from "react-native";
 import axios from 'axios';
 import api from '../../APIs/API';
 import { Button, CheckBox  } from 'react-native-elements';
+import SelectDropdown from 'react-native-select-dropdown'
 
 
 const { height, width } = Dimensions.get('window');
@@ -15,13 +13,31 @@ export default function SignupScreen({navigation}){
     const [firstname, setFirstname] = useState('');
     const [lastname, setLastname] = useState('');
     const [email, setEmail] = useState('');
+    const [gender, setGender] = useState('');
+    const [ethnicGroup, setEthnicGroup] = useState('');
     const [confirmPassword, setConfirmPassword] = useState('');
     const [password, setPassword] = useState('');
     const [checked, setChecked] = useState(false)
 
+    const genderChoice = [
+        {title : 'Male'},
+        {title : 'Female'}
+    ]
+
+    const ethnicGroupChoice = [
+        {title : 'African'},
+        {title : 'White'},
+        {title : 'Coloured'},
+        {title : 'Indian'},
+        {title : 'Other'},
+    ]
+
+    
+
+
     const submitForm = async () =>{
 
-        if (!firstname || !lastname || !email || !password || !confirmPassword) {
+        if (!firstname || !lastname || !email || !password || !confirmPassword || !gender || !ethnicGroup) {
             Alert.alert('Validation Error', 'Please fill all the fields.');
             return;
         }
@@ -40,7 +56,9 @@ export default function SignupScreen({navigation}){
             firstname,
             lastname, 
             email,
-            password
+            password,
+            gender, 
+            ethnic_group : ethnicGroup
         }
 
         await axios.post(
@@ -92,6 +110,66 @@ export default function SignupScreen({navigation}){
                 placeholder='enter email'
                 value={email}
                 onChangeText={setEmail}
+            />
+        </View>
+        
+        <View style={styles.FormField}>
+            <Text>Gender</Text>
+            <SelectDropdown
+                data={genderChoice}
+                onSelect={(selectedItem, index) => {
+                    setGender(selectedItem.title);
+                }}
+                renderButton={(selectedItem, isOpened) => {
+                return (
+                    <View>
+
+                        <Text style={styles.FormSelect}>
+                            {(selectedItem && selectedItem.title) || 'Select your gender'}
+                        </Text>
+                    
+                    </View>
+                );
+                }}
+                renderItem={(item, index, isSelected) => {
+                return (
+                    <View style={{...styles.FormSelectOption, ...(isSelected && {backgroundColor: '#D2D9DF'})}}>
+                    <Text style={styles.FormSelectText}>{item.title}</Text>
+                    </View>
+                );
+                }}
+                showsVerticalScrollIndicator={false}
+                dropdownStyle={styles.FormSelectDrop}
+            />
+        </View>
+
+        <View style={styles.FormField}>
+            <Text>Ethnic Group</Text>
+            <SelectDropdown
+                data={ethnicGroup}
+                onSelect={(selectedItem, index) => {
+                    setEthnicGroup(selectedItem.title);
+                }}
+                renderButton={(selectedItem, isOpened) => {
+                return (
+                    <View>
+
+                        <Text style={styles.FormSelect}>
+                            {(selectedItem && selectedItem.title) || 'Select your enthic group'}
+                        </Text>
+                    
+                    </View>
+                );
+                }}
+                renderItem={(item, index, isSelected) => {
+                return (
+                    <View style={{...styles.FormSelectOption, ...(isSelected && {backgroundColor: '#D2D9DF'})}}>
+                    <Text style={styles.FormSelectText}>{item.title}</Text>
+                    </View>
+                );
+                }}
+                showsVerticalScrollIndicator={false}
+                dropdownStyle={styles.FormSelectDrop}
             />
         </View>
         <View style={styles.FormField}>
@@ -195,6 +273,22 @@ const styles = StyleSheet.create({
         flex : 10,
         flexShrink: 1, 
         marginRight : width * 0.05
-      },
+    },
+
+
+    FormSelect : {
+
+    },
+
+    FormSelectOption : {
+
+    },
+    FormSelectText : {
+
+    },
+
+    FormSelectDrop : {
+
+    }
 })
 
