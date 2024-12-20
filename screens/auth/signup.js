@@ -1,5 +1,15 @@
 import React , {useState} from "react";
-import { ScrollView, Dimensions, View, Alert, StyleSheet, Text, TextInput, Pressable } from "react-native";
+import {
+  ScrollView,
+  Dimensions,
+  View,
+  Alert,
+  StyleSheet,
+  Text,
+  TextInput,
+  Pressable,
+  TouchableOpacity,
+} from "react-native";
 import axios from 'axios';
 import api from '../../APIs/API';
 import { Button, CheckBox  } from 'react-native-elements';
@@ -80,215 +90,253 @@ export default function SignupScreen({navigation}){
     }
 
     return (
-        <ScrollView style={styles.MainScreen}>
-        
+      <ScrollView style={styles.MainScreen}>
         <View style={styles.Header}>
-            <Text style={styles.HeadText}>Sign up</Text>
+          <Text style={styles.HeadText}>Sign up</Text>
         </View>
         <View style={styles.FormField}>
-            <Text>First Name</Text>
-            <TextInput 
-                style={styles.TextInput} 
-                placeholder='enter first name'
-                value={firstname}
-                onChangeText={setFirstname}
-            />
+          <Text>First Name</Text>
+          <TextInput
+            style={styles.TextInput}
+            placeholder="enter first name"
+            value={firstname}
+            onChangeText={setFirstname}
+          />
         </View>
         <View style={styles.FormField}>
-            <Text>Last Name</Text>
-            <TextInput 
-                style={styles.TextInput} 
-                placeholder='enter last name'
-                value={lastname}
-                onChangeText={setLastname}
-            />
+          <Text>Last Name</Text>
+          <TextInput
+            style={styles.TextInput}
+            placeholder="enter last name"
+            value={lastname}
+            onChangeText={setLastname}
+          />
         </View>
         <View style={styles.FormField}>
-            <Text>Email</Text>
-            <TextInput 
-                style={styles.TextInput} 
-                placeholder='enter email'
-                value={email}
-                onChangeText={setEmail}
-            />
-        </View>
-        
-        <View style={styles.FormField}>
-            <Text>Gender</Text>
-            <SelectDropdown
-                data={genderChoice}
-                onSelect={(selectedItem, index) => {
-                    setGender(selectedItem.title);
-                }}
-                renderButton={(selectedItem, isOpened) => {
-                return (
-                    <View>
-
-                        <Text style={styles.FormSelect}>
-                            {(selectedItem && selectedItem.title) || 'Select your gender'}
-                        </Text>
-                    
-                    </View>
-                );
-                }}
-                renderItem={(item, index, isSelected) => {
-                return (
-                    <View style={{...styles.FormSelectOption, ...(isSelected && {backgroundColor: '#D2D9DF'})}}>
-                    <Text style={styles.FormSelectText}>{item.title}</Text>
-                    </View>
-                );
-                }}
-                showsVerticalScrollIndicator={false}
-                dropdownStyle={styles.FormSelectDrop}
-            />
+          <Text>Email</Text>
+          <TextInput
+            style={styles.TextInput}
+            placeholder="enter email"
+            value={email}
+            onChangeText={setEmail}
+          />
         </View>
 
         <View style={styles.FormField}>
-            <Text>Ethnic Group</Text>
-            <SelectDropdown
-                data={ethnicGroup}
-                onSelect={(selectedItem, index) => {
-                    setEthnicGroup(selectedItem.title);
-                }}
-                renderButton={(selectedItem, isOpened) => {
-                return (
-                    <View>
+          <Text>Gender</Text>
+          <SelectDropdown
+            data={genderChoice}
+            onSelect={(selectedItem, index) => {
+              setGender(selectedItem.title);
+            }}
+            renderButton={(selectedItem, isOpened) => {
+              return (
+                <View>
+                  <Text style={styles.FormSelect}>
+                    {(selectedItem && selectedItem.title) ||
+                      "Select your gender"}
+                  </Text>
+                </View>
+              );
+            }}
+            renderItem={(item, index, isSelected) => {
+              return (
+                <View
+                  style={{
+                    ...styles.FormSelectOption,
+                    ...(isSelected && { backgroundColor: "#D2D9DF" }),
+                  }}
+                >
+                  <Text style={styles.FormSelectText}>{item.title}</Text>
+                </View>
+              );
+            }}
+            showsVerticalScrollIndicator={false}
+            dropdownStyle={styles.FormSelectDrop}
+          />
+        </View>
 
-                        <Text style={styles.FormSelect}>
-                            {(selectedItem && selectedItem.title) || 'Select your enthic group'}
-                        </Text>
-                    
-                    </View>
-                );
-                }}
-                renderItem={(item, index, isSelected) => {
-                return (
-                    <View style={{...styles.FormSelectOption, ...(isSelected && {backgroundColor: '#D2D9DF'})}}>
-                    <Text style={styles.FormSelectText}>{item.title}</Text>
-                    </View>
-                );
-                }}
-                showsVerticalScrollIndicator={false}
-                dropdownStyle={styles.FormSelectDrop}
-            />
+        <View style={styles.FormField}>
+          <Text>Ethnic Group</Text>
+          <SelectDropdown
+            data={ethnicGroupChoice}
+            onSelect={(selectedItem, index) => {
+              setEthnicGroup(selectedItem.title);
+            }}
+            renderButton={(selectedItem, isOpened) => {
+              return (
+                <View>
+                  <Text style={styles.FormSelect}>
+                    {(selectedItem && selectedItem.title) ||
+                      "Select your enthic group"}
+                  </Text>
+                </View>
+              );
+            }}
+            renderItem={(item, index, isSelected) => {
+              return (
+                <View
+                  style={{
+                    ...styles.FormSelectOption,
+                    ...(isSelected && { backgroundColor: "#D2D9DF" }),
+                  }}
+                >
+                  <Text style={styles.FormSelectText}>{item.title}</Text>
+                </View>
+              );
+            }}
+            showsVerticalScrollIndicator={false}
+            dropdownStyle={styles.FormSelectDrop}
+          />
         </View>
         <View style={styles.FormField}>
-            <Text>Password</Text>
-            <TextInput 
-                style={styles.TextInput} 
-                secureTextEntry 
-                placeholder='enter password'
-                value={password}
-                onChangeText={setPassword}
-            />
+          <Text>Password</Text>
+          <TextInput
+            style={styles.TextInput}
+            secureTextEntry
+            placeholder="enter password"
+            value={password}
+            onChangeText={setPassword}
+          />
         </View>
         <View style={styles.FormField}>
-            <Text>Confirm Password</Text>
-            <TextInput 
-                style={styles.TextInput} 
-                secureTextEntry 
-                placeholder='confirm password'
-                value={confirmPassword}
-                onChangeText={setConfirmPassword}
-            />
+          <Text>Confirm Password</Text>
+          <TextInput
+            style={styles.TextInput}
+            secureTextEntry
+            placeholder="confirm password"
+            value={confirmPassword}
+            onChangeText={setConfirmPassword}
+          />
         </View>
-        <View style={styles.TermsField}>
-            <CheckBox
-                checked={checked}
-                onPress={() => setChecked(!checked)}
-                style={{flex:1}}
-            />
-            <Text style={styles.TermsText}>By registering you accept our Terms of Use and Privacy Policy</Text>
+        <View style={styles.termsField}>
+          <CheckBox
+            checked={checked}
+            onPress={() => setChecked(!checked)}
+            containerStyle={styles.checkBoxContainer}
+          />
+          <TouchableOpacity
+            onPress={() => setChecked(!checked)}
+            style={styles.textContainer}
+          >
+            <Text style={styles.termsText}>
+              By registering, you accept our{" "}
+              <Text style={styles.linkText}>Terms of Use</Text> and{" "}
+              <Text style={styles.linkText}>Privacy Policy</Text>.
+            </Text>
+          </TouchableOpacity>
         </View>
         <View style={styles.ButtonField}>
-            <Button 
-                buttonStyle={styles.Button} 
-                titleStyle={{color:"#000000"}} 
-                title={"Continue"}
-                onPress={submitForm}    
-            ></Button>
+          <Button
+            buttonStyle={styles.Button}
+            titleStyle={{ color: "#000000" }}
+            title={"Continue"}
+            onPress={submitForm}
+          ></Button>
         </View>
         <View style={styles.TermsField}>
-            <Text style={{marginLeft : height * 0.05}}>Already have an Account? </Text>
-            <Pressable onPress={()=>{navigation.replace('Login')}}>
-                <Text style={{color : "#0000ff", textDecorationLine : "underline"}}>Login</Text>
-            </Pressable>
+          <Text style={{ marginLeft: height * 0.05 }}>
+            Already have an Account?{" "}
+          </Text>
+          <Pressable
+            onPress={() => {
+              navigation.replace("Login");
+            }}
+          >
+            <Text style={{ color: "#0000ff", textDecorationLine: "underline" }}>
+              Login
+            </Text>
+          </Pressable>
         </View>
-    </ScrollView>
+      </ScrollView>
     );
 }
 
 
 
 const styles = StyleSheet.create({
-    MainScreen : {
-        display : 'flex',
-        flexDirection : 'column'
-    },
-    Header : {
-        height : height * 0.15,
-        width : width,
-        display : 'flex',
-        alignContent : 'center',
-        justifyContent : 'flex-end',
-        marginBottom : height * 0.05
-    },
-    HeadText :{
-        fontSize: 26,
-        color: '#000',
-        textDecorationLine : 'underline',
-        textDecorationColor : '#0000ff',
-        textAlign : 'center',
-        fontWeight : 'bold',
-        
-    },
-    ButtonField : {
-        marginLeft : width * 0.05,
-        marginBottom : height * 0.02,
-        width : width * 0.9,
-    },
-    Button : {
-        backgroundColor: "#a8a8a8",
-        borderRadius : 12,
-    },
-    FormField : {
-        marginLeft : width * 0.05,
-        marginBottom : height * 0.02,
-        width : width * 0.9,
-    },
-    TextInput : {
-        borderWidth: 1,
-        borderRadius : 5,
-        height : height * 0.075,
-        borderColor : "#bbbbbb",
-        paddingHorizontal : 10,
-        fontSize : 16
-    },
-    TermsField : {
-        display : 'flex',
-        flexWrap : 'wrap',
-        flexDirection : 'row'
-    },
-    TermsText: {
-        flex : 10,
-        flexShrink: 1, 
-        marginRight : width * 0.05
-    },
+  MainScreen: {
+    display: "flex",
+    flexDirection: "column",
+  },
+  Header: {
+    height: height * 0.15,
+    width: width,
+    display: "flex",
+    alignContent: "center",
+    justifyContent: "flex-end",
+    marginBottom: height * 0.05,
+  },
+  HeadText: {
+    fontSize: 26,
+    color: "#000",
+    textDecorationLine: "underline",
+    textDecorationColor: "#0000ff",
+    textAlign: "center",
+    fontWeight: "bold",
+  },
+  ButtonField: {
+    marginLeft: width * 0.05,
+    marginBottom: height * 0.02,
+    width: width * 0.9,
+  },
+  Button: {
+    backgroundColor: "#a8a8a8",
+    borderRadius: 12,
+  },
+  FormField: {
+    marginLeft: width * 0.05,
+    marginBottom: height * 0.02,
+    width: width * 0.9,
+  },
+  TextInput: {
+    borderWidth: 1,
+    borderRadius: 5,
+    height: height * 0.075,
+    borderColor: "#bbbbbb",
+    paddingHorizontal: 10,
+    fontSize: 16,
+  },
+  TermsField: {
+    display: "flex",
+    flexWrap: "wrap",
+    flexDirection: "row",
+  },
+  TermsText: {
+    flex: 10,
+    flexShrink: 1,
+    marginRight: width * 0.05,
+  },
+  termsField: {
+    flexDirection: "row",
+    alignItems: "center",
+    marginVertical: 10,
+    paddingHorizontal: 10,
+  },
+  checkBoxContainer: {
+    padding: 0,
+    margin: 0,
+    marginRight: 5, // Small spacing between checkbox and text
+    backgroundColor: "transparent", // Remove box background
+  },
+  textContainer: {
+    flex: 1,
+    marginLeft: 5,
+  },
+  termsText: {
+    fontSize: 14,
+    color: "#333",
+  },
+  linkText: {
+    color: "#007BFF",
+    textDecorationLine: "underline",
+  },
 
+  FormSelect: {},
 
-    FormSelect : {
+  FormSelectOption: {},
+  FormSelectText: {},
 
-    },
-
-    FormSelectOption : {
-
-    },
-    FormSelectText : {
-
-    },
-
-    FormSelectDrop : {
-
-    }
-})
+  FormSelectDrop: {},
+});
 

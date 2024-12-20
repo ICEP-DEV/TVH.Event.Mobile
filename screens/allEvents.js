@@ -13,7 +13,7 @@ import api from "../APIs/API";
 import axios from "axios";
 import { useNavigation } from "@react-navigation/native";
 
-const { height, width } = Dimensions.get("window");
+const { height: h, width: w } = Dimensions.get("window");
 
 // Main Component: AllEvents
 function AllEvents() {
