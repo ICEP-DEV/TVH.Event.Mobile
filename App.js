@@ -16,6 +16,7 @@ import ProfileScreen from "./screens/profileScreen.js";
 import RegisteredEventsScreen from "./screens/profile/registeredEvents.js";
 import SurveyScreen from "./screens/surveyScreen.js";
 import EventFeedbackScreen from "./screens/eventFeedbackScreen.js";
+import CalendarScreen from "./screens/calendaScreen.js";
 
 
 const Stack = createStackNavigator();
@@ -47,7 +48,7 @@ function TabNavigator() {
     >
       <Tab.Screen name="Home" component={HomeScreen} />
       <Tab.Screen name="Notifications" component={NotificationScreen} />
-      <Tab.Screen name="Events" component={AllEvents} />
+      <Tab.Screen name="Events" component={CalendarScreen} options={{ headerShown: false }} />
       <Tab.Screen name="Profile" component={ProfileScreen} options={{ headerShown: false }} />
     </Tab.Navigator>
   );

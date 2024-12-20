@@ -56,7 +56,7 @@ const ProfileScreen = ({navigation}) => {
       ).then((response) =>{
         setSurveys(response.data.surveys)
       }).catch((error) =>{
-        console.log(error)
+        console.log(error + "line 59")
       })
     }
   
