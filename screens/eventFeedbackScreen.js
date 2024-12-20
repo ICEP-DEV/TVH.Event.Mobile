@@ -2,15 +2,18 @@ import React, { useState, useEffect } from 'react';
 import {
   View,
   Text,
-  FlatList,
   StyleSheet,
   Dimensions,
   TouchableOpacity,
-  ScrollView
+  ScrollView,
+  TextInput,
+  Modal
 } from 'react-native';
 import axios from 'axios';
 import api from "../APIs/API";
 import { Rating , Icon } from "react-native-elements";
+import AsyncStorage from '@react-native-async-storage/async-storage';
+
 
 
 const { height: h, width: w } = Dimensions.get("window");
@@ -18,6 +21,12 @@ const { height: h, width: w } = Dimensions.get("window");
 const EventFeedbackScreen = ({route, navigation})=>{
     const {event} = route.params;
     const [allReviews, setAllReviews] = useState([]);
+    const [modalVisible, setModalVisible] = useState(false)
+    const [reviewRating, setReviewRating] = useState(0)
+    const [reviewText, setReviewText] = useState("")
+    const [errorMessage, SetErrorMessage] = useState(false)
+    const [infoModal, setInfoModal] = useState(false)
+    const [infoModalContent, setInfoModalContent] = useState("")
 
     useEffect(()=>{
         const getAllReviews = async()=>{
@@ -34,6 +43,10 @@ const EventFeedbackScreen = ({route, navigation})=>{
     },[])
 
     const getAverage = () => {
+
+        if(allReviews.length === 0){
+            return 0;
+        }
         let total = allReviews.reduce((sum, reviewer) => sum + reviewer.rating, 0);
         return (total / allReviews.length).toFixed(1);
     };
@@ -82,6 +95,58 @@ const EventFeedbackScreen = ({route, navigation})=>{
     );
 
 
+    const submitReview = async()=>{
+        
+        try{
+            if(reviewRating === 0){
+                return SetErrorMessage(true)
+            }
+    
+            let attendee = null;
+            await AsyncStorage.getItem("attendee").then((response) =>{
+                attendee = JSON.parse(response)
+            });
+
+            
+            if(attendee === null){
+                setInfoModalContent("Please log in first")
+                return setInfoModal(true);
+            }
+
+            await axios.post(
+                api + "/reviews/create",
+                {
+                    attendee_id : attendee.attendee_id,
+                    event_id : event.event_id,
+                    rating : reviewRating,
+                    content : reviewText
+                }
+            ).then(()=>{
+                setModalVisible(false)
+                setReviewRating(0)
+                setReviewText("")
+                SetErrorMessage(false)
+                setInfoModalContent("Thank you for sending your review.")
+                setInfoModal(true)
+            }).catch((error) =>{
+
+                if(error.status === 404){
+                    setModalVisible(false)
+                    setReviewRating(0)
+                    setReviewText("")
+                    SetErrorMessage(false)
+                    setInfoModalContent("Sorry,but only attendees who registered for the event can submit reviews for the event")
+                    return setInfoModal(true);
+                }
+                console.log("error creating review : " + error)
+            })
+  
+        }catch(error){
+            console.error("Error creating review: ", error);
+        }
+    }
+
+
     return <View style={styles.container}>
         <View style={styles.header}>
             <TouchableOpacity 
@@ -119,9 +184,89 @@ const EventFeedbackScreen = ({route, navigation})=>{
                 ))
             }
       </ScrollView>
-      <TouchableOpacity style={styles.button}>
+      <TouchableOpacity style={styles.button} onPress={()=>{setModalVisible(true)}}>
         <Text style={styles.buttonText}>Write Review</Text>
       </TouchableOpacity>
+
+      <Modal
+        animationType="slide"
+        transparent={true}
+        visible={modalVisible}
+        onRequestClose={() => setModalVisible(false)}
+      >
+        <View style={styles.modalOverlay}>
+            <View style={styles.modalContainer}>
+                <Text style={styles.modalTitle}>Your word is important to us</Text>
+                <Rating
+                    imageSize={30}
+                    startingValue={reviewRating}
+                    onFinishRating={(rating) => setReviewRating(rating)}
+                    style={styles.ratingInput}
+                    //fractions={1}
+                />
+                {
+                    errorMessage === true ? <Text style={{
+                        ...styles.modalSubtitle,
+                        color : "red"
+                    }}>
+                        Please use the stars to rate the event
+                    </Text> : <></>
+                }
+                <Text style={styles.modalSubtitle}>
+                    Please share your opinion about the event
+                </Text>
+                <TextInput
+                    style={styles.textInput}
+                    placeholder="Your review"
+                    multiline
+                    value={reviewText}
+                    onChangeText={(text) => setReviewText(text)}
+                />  
+                <TouchableOpacity
+                    style={{
+                        ...styles.submitButton,
+                        backgroundColor : "#040051"
+                    }}
+                    onPress={()=>{submitReview()}}
+                >
+                    <Text style={styles.submitButtonText}>SEND REVIEW</Text>
+                </TouchableOpacity>
+                
+                <TouchableOpacity
+                    style={{
+                        ...styles.submitButton, backgroundColor : "#921"
+                    }}
+                    onPress={()=>{setModalVisible(false)}}
+                >
+                    <Text style={styles.submitButtonText}>CANCEL</Text>
+                </TouchableOpacity>
+                
+            </View>
+        </View>
+
+      </Modal>
+
+      <Modal
+        animationType="slide"
+        transparent={true}
+        visible={infoModal}
+        onRequestClose={() => setInfoModal(false)}
+      >
+        <View style={styles.modalOverlay}>
+            <View style={styles.modalContainer}>
+                <Text style={styles.modalTitle}>{infoModalContent}</Text>
+                <TouchableOpacity
+                    style={{
+                        ...styles.submitButton, backgroundColor : "#040051"
+                    }}
+                    onPress={()=>{setInfoModal(false)}}
+                >
+                    <Text style={styles.submitButtonText}>Close</Text>
+                </TouchableOpacity>
+            </View>
+        </View>
+
+      </Modal>
     </View>
 }
 
@@ -134,7 +279,7 @@ const styles = StyleSheet.create({
     title: { fontSize: 22, padding: 20 },
     summaryContainer: { left: 0 ,flexDirection: 'row', padding: 20 },
     averageScore: { marginRight: 20 },
-    averageText: { fontSize: 34 },
+    averageText: { fontSize: 34, textAlign:'center' },
     reviewBar: { flexDirection: 'row', alignItems: 'center', marginVertical: 5, width: w * 0.65 },
     barText: { width: 20, textAlign: 'center' },
     barContainer: { flex: 1, height: 10, backgroundColor: '#ccc', borderRadius: 5},
@@ -151,6 +296,56 @@ const styles = StyleSheet.create({
     reviewText: { color: '#666' },
     button: { backgroundColor: '#040051', padding: 15, alignItems: 'center', margin: 20, borderRadius: 10 },
     buttonText: { color: '#fff', fontSize: 18 },
+    // Modal styles
+    modalOverlay: {
+        flex: 1,
+        justifyContent: "center",
+        alignItems: "center",
+        backgroundColor: "rgba(0, 0, 0, 0.5)",
+    },
+    modalContainer: {
+        width: "90%",
+        backgroundColor: "#FFFFFF",
+        borderRadius: 10,
+        padding: 20,
+        alignItems: "center",
+    },
+    modalTitle: {
+        fontSize: 18,
+        fontWeight: "bold",
+        marginBottom: 10,
+    },
+    modalSubtitle: {
+        fontSize: 14,
+        marginBottom: 20,
+        textAlign: "center",
+        color: "#757575",
+    },
+      ratingInput: {
+        marginVertical: 10,
+    },
+    textInput: {
+        width: "100%",
+        height: 100,
+        borderWidth: 1,
+        borderColor: "#E0E0E0",
+        borderRadius: 5,
+        padding: 10,
+        marginBottom: 20,
+        textAlignVertical: "top",
+    },
+    submitButton: {
+        paddingVertical: 12,
+        paddingHorizontal: 30,
+        borderRadius: 15,
+        alignItems: "center",
+        marginBottom : 10
+    },
+    submitButtonText: {
+        fontSize: 16,
+        color: "#FFFFFF",
+        fontWeight: "bold",
+    },
   });
 
 

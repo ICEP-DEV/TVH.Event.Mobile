@@ -16,6 +16,9 @@ import ProfileScreen from "./screens/profileScreen.js";
 import RegisteredEventsScreen from "./screens/profile/registeredEvents.js";
 import SurveyScreen from "./screens/surveyScreen.js";
 import EventFeedbackScreen from "./screens/eventFeedbackScreen.js";
+import CalendarScreen from "./screens/calendaScreen.js";
+
+import QRScannerComponent from "./screens/components/qrscanner.component.js";
 
 
 const Stack = createStackNavigator();
@@ -47,7 +50,7 @@ function TabNavigator() {
     >
       <Tab.Screen name="Home" component={HomeScreen} />
       <Tab.Screen name="Notifications" component={NotificationScreen} />
-      <Tab.Screen name="Events" component={AllEvents} />
+      <Tab.Screen name="Events" component={CalendarScreen} options={{ headerShown: false }} />
       <Tab.Screen name="Profile" component={ProfileScreen} options={{ headerShown: false }} />
     </Tab.Navigator>
   );
@@ -56,6 +59,17 @@ function TabNavigator() {
 
 export default function App(){
 
+  const requestPermission = async()=>{
+    
+    try{
+      const cameraPermission = await PermissionsAndroid.request(
+        PermissionsAndroid.PERMISSIONS.VIBRATE
+      );
+    }
+    catch(error){
+      console.log(error)
+    }
+  }
 
   return (
     <NavigationContainer>
@@ -85,6 +99,11 @@ export default function App(){
         <Stack.Screen
           name="EventFeedbackScreen"
           component={EventFeedbackScreen}
+          options={{ headerShown: false }} 
+        />
+        <Stack.Screen
+          name="QRScanner"
+          component={QRScannerComponent}
           options={{ headerShown: false }} 
         />
       </Stack.Navigator>
