@@ -12,6 +12,8 @@ import { Button } from "react-native-elements";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import axios from "axios";
 import api from "../APIs/API";
+import { useCameraPermissions } from 'expo-camera';
+
 
 const { height, width } = Dimensions.get("window");
 
@@ -22,18 +24,28 @@ export default function EventDetails({ route, navigation }) {
   const [isLogged, setIsLogged] = useState(null);
   const [isRegistered, setIsRegistered] = useState(false);
 
+  const [permission, requestPermission] = useCameraPermissions();
+  const isPermissionGranted = Boolean(permission?.granted);
+
   useEffect(() => {
+
+    if(!isPermissionGranted){
+      requestPermission();
+    }
+
+
     if (event.image) {
       setImageUri(`data:image/jpeg;base64,${event.image}`);
     }
 
     const getRegistered = async () => {
-      const attendee = await AsyncStorage.getItem("attendee_id");
+      const attendee = await AsyncStorage.getItem("attendee");
       setIsLogged(attendee);
+      console.log(attendee)
       try {
-        const attendee_id = await AsyncStorage.getItem("attendee_id");
+        //const attendee_id = await AsyncStorage.getItem("attendee");
         const payload = {
-          attendee_id: attendee_id,
+          attendee_id: attendee.attendee_id,
           event: event.event_id,
         };
         await axios
@@ -57,6 +69,14 @@ export default function EventDetails({ route, navigation }) {
       navigation.navigate("RegisterForm", event.event_id);
     }
   };
+
+  const toScan = ()=>{
+    if(!isPermissionGranted){
+      requestPermission()
+    }else{
+      navigation.navigate("QRScanner")
+    }
+  }
 
   return (
     <ScrollView contentContainerStyle={styles.container}>
@@ -96,6 +116,13 @@ export default function EventDetails({ route, navigation }) {
               } else {
                 navigation.replace("Login");
               }
+            }}
+          />
+          <Button
+            title="QR Test"
+            buttonStyle={styles.registerButton}
+            onPress={()=>{
+              toScan();
             }}
           />
         </View>
