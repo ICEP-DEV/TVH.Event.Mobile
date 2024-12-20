@@ -27,7 +27,23 @@ export default function EventDetails({ route, navigation }) {
   const [permission, requestPermission] = useCameraPermissions();
   const isPermissionGranted = Boolean(permission?.granted);
 
+  const [attendee, setAttendee] = useState(null)
+
+  const [registrationID, setRegistrationID] = useState(0)
+
   useEffect(() => {
+
+    const fetchUser = async()=>{
+      const res = await AsyncStorage.getItem("attendee");
+      if(res){
+        setAttendee(JSON.parse(res));
+        getRegistered(JSON.parse(res));
+        setIsLogged(true)
+      }
+
+    }
+
+    fetchUser();
 
     if(!isPermissionGranted){
       requestPermission();
@@ -38,14 +54,11 @@ export default function EventDetails({ route, navigation }) {
       setImageUri(`data:image/jpeg;base64,${event.image}`);
     }
 
-    const getRegistered = async () => {
-      const attendee = await AsyncStorage.getItem("attendee");
-      setIsLogged(attendee);
-      console.log(attendee)
+    const getRegistered = async (a) => {
       try {
         //const attendee_id = await AsyncStorage.getItem("attendee");
         const payload = {
-          attendee_id: attendee.attendee_id,
+          attendee_id: a.attendee_id,
           event: event.event_id,
         };
         await axios
@@ -53,13 +66,14 @@ export default function EventDetails({ route, navigation }) {
           .then((response) => {
             if (response.data["message"]) {
               setIsRegistered(true);
+              setRegistrationID(response.data["message"].registration_id)
             }
           });
       } catch (error) {
         console.log(error);
       }
     };
-    getRegistered();
+    
   }, [event.image, event.event_id]);
 
   const toRegister = async () => {
@@ -73,7 +87,11 @@ export default function EventDetails({ route, navigation }) {
   const toScan = ()=>{
     if(!isPermissionGranted){
       requestPermission()
-    }else{
+    }
+    else if(registrationID === 0){
+      Alert.alert("Please Apply for the event first")
+    }
+    else{
       navigation.navigate("QRScanner")
     }
   }
